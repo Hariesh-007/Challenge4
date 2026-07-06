@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Challenge4/',
+  base: process.env.VERCEL ? '/' : '/Challenge4/',
   plugins: [react()],
 })
