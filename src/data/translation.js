@@ -1,0 +1,263 @@
+export const TRANSLATIONS = {
+  en: {
+    appName: "FIFA 2026 Smart Stadium Assistant",
+    tagline: "GenAI Stadium Intelligence Platform",
+    roleSelector: "Select Your Role",
+    stadiumSelector: "Select Venue",
+    timeSelector: "Match Time Window",
+    preMatch: "Pre-Match (Gates Open)",
+    midMatch: "Mid-Match (Game Time)",
+    postMatch: "Post-Match (Egress)",
+    
+    // Roles
+    fan: "Fan",
+    volunteer: "Volunteer",
+    staff: "Venue Staff",
+    organizer: "Organizer",
+    
+    // Menu / Tabs
+    tabWayfinding: "Stadium Map & Navigation",
+    tabAIChat: "AI Chat Assistant",
+    tabTransit: "Transit & Departure",
+    tabSustainability: "Eco Hub",
+    tabCommandCenter: "Ops Command Center",
+    
+    // Accessibility
+    accessTitle: "Accessibility Settings",
+    highContrast: "High Contrast UI",
+    largeText: "Large Text Size",
+    ttsActive: "Voice Read Aloud (TTS)",
+    screenReaderHelper: "Screen Reader Assistance",
+    sensorySens: "Sensory Sensitive Route",
+    wheelchairReq: "Wheelchair Accessible Route",
+    
+    // UI Common
+    status: "Status",
+    congestion: "Congestion Level",
+    queueTime: "Avg. Queue Time",
+    minutes: "mins",
+    load: "Load",
+    actionRequired: "Action Required",
+    alerts: "Live Matchday Alerts",
+    noAlerts: "All operational channels running normally.",
+    carbonEmissions: "Carbon Footprint",
+    travelMode: "Travel Mode Selector",
+    selectStart: "Select Departure Point",
+    selectDest: "Select Destination",
+    findRoute: "Find Best Route",
+    shortestRoute: "Shortest Path",
+    accessibleRoute: "Accessible Path (Lifts & Ramps)",
+    lowCrowdRoute: "Congestion-Bypass Path",
+    
+    // Chat specific
+    chatGreeting: "Welcome to FIFA World Cup 2026. How can I help you today?",
+    chatPlaceholder: "Ask about gates, accessibility, transit, or volunteer checklists...",
+    sendMessage: "Send",
+    clearChat: "Clear Conversation",
+    smartPrompts: "Quick Enquiries",
+    apiSettings: "AI API Configuration",
+    apiKeyLabel: "OpenAI API Key (Optional)",
+    apiWarning: "If blank, runs on secure local context-engine.",
+    
+    // Sustainability
+    sustainabilityScore: "Eco-Hub Score",
+    recycleGameTitle: "Eco-Sorter Challenge",
+    recycleGameInstructions: "Drag or click the waste items to the correct recycling stream to earn eco-points!",
+    recycle: "Recycle",
+    compost: "Compost",
+    landfill: "Landfill",
+    score: "Score",
+    playAgain: "Reset Game",
+    ecoTips: "Sustainability Guidance",
+    
+    // Ops Dashboard
+    opsTitle: "FIFA Incident Command Board",
+    incidentsTitle: "Active Incidents",
+    queuesTitle: "Queue Management Simulator",
+    reportedTime: "Reported Time",
+    assigned: "Assigned To",
+    severity: "Severity",
+    quickActions: "AI-Suggested Actions",
+    simulationControls: "Stadium Congestion Simulator",
+    simulateIncident: "Report New Simulated Incident",
+    incidentType: "Incident Type",
+    incidentZone: "Incident Zone",
+    submitIncident: "Inject Incident",
+    resolve: "Resolve",
+    redeploy: "Redeploy Staff"
+  },
+  es: {
+    appName: "Asistente Inteligente de Estadios FIFA 2026",
+    tagline: "Plataforma de Inteligencia de Estadios GenAI",
+    roleSelector: "Selecciona tu Rol",
+    stadiumSelector: "Seleccionar Sede",
+    timeSelector: "Horario del Partido",
+    preMatch: "Pre-Partido (Puertas Abiertas)",
+    midMatch: "Durante el Partido",
+    postMatch: "Post-Partido (Salida)",
+    
+    // Roles
+    fan: "Aficionado",
+    volunteer: "Voluntario",
+    staff: "Personal del Estadio",
+    organizer: "Organizador",
+    
+    // Menu / Tabs
+    tabWayfinding: "Mapa del Estadio y Ruta",
+    tabAIChat: "Asistente de Chat IA",
+    tabTransit: "Tránsito y Salida",
+    tabSustainability: "Centro Eco",
+    tabCommandCenter: "Centro de Mando",
+    
+    // Accessibility
+    accessTitle: "Ajustes de Accesibilidad",
+    highContrast: "Interfaz de Alto Contraste",
+    largeText: "Tamaño de Texto Grande",
+    ttsActive: "Lectura por Voz (TTS)",
+    screenReaderHelper: "Ayuda para Lector de Pantalla",
+    sensorySens: "Ruta de Sensibilidad Sensorial",
+    wheelchairReq: "Ruta Accesible para Sillas de Ruedas",
+    
+    // UI Common
+    status: "Estado",
+    congestion: "Nivel de Congestión",
+    queueTime: "Tiempo Promedio de Espera",
+    minutes: "min",
+    load: "Carga",
+    actionRequired: "Acción Requerida",
+    alerts: "Alertas en Vivo del Partido",
+    noAlerts: "Todos los canales operativos funcionando con normalidad.",
+    carbonEmissions: "Huella de Carbono",
+    travelMode: "Selector de Medio de Transporte",
+    selectStart: "Seleccionar Punto de Salida",
+    selectDest: "Seleccionar Destino",
+    findRoute: "Buscar Mejor Ruta",
+    shortestRoute: "Ruta Corta",
+    accessibleRoute: "Ruta Accesible (Ascensores y Rampas)",
+    lowCrowdRoute: "Ruta con Menos Multitud",
+    
+    // Chat specific
+    chatGreeting: "Bienvenido a la Copa Mundial de la FIFA 2026. ¿Cómo puedo ayudarte hoy?",
+    chatPlaceholder: "Pregunta sobre accesos, accesibilidad, transporte o tareas de voluntariado...",
+    sendMessage: "Enviar",
+    clearChat: "Limpiar Conversación",
+    smartPrompts: "Consultas Rápidas",
+    apiSettings: "Configuración de API de IA",
+    apiKeyLabel: "Clave API de OpenAI (Opcional)",
+    apiWarning: "Si está en blanco, funciona con el motor de contexto local seguro.",
+    
+    // Sustainability
+    sustainabilityScore: "Puntuación Eco-Centro",
+    recycleGameTitle: "Desafío de Clasificación Eco",
+    recycleGameInstructions: "¡Arrastra o haz clic en los residuos hacia el contenedor correcto para ganar puntos eco!",
+    recycle: "Reciclar",
+    compost: "Compostar",
+    landfill: "Basura",
+    score: "Puntuación",
+    playAgain: "Reiniciar Juego",
+    ecoTips: "Consejos de Sostenibilidad",
+    
+    // Ops Dashboard
+    opsTitle: "Tablero de Control de Incidentes FIFA",
+    incidentsTitle: "Incidentes Activos",
+    queuesTitle: "Simulador de Gestión de Colas",
+    reportedTime: "Hora del Reporte",
+    assigned: "Asignado A",
+    severity: "Severidad",
+    quickActions: "Acciones Sugeridas por IA",
+    simulationControls: "Simulador de Congestión del Estadio",
+    simulateIncident: "Reportar Incidente Simulado",
+    incidentType: "Tipo de Incidente",
+    incidentZone: "Zona del Incidente",
+    submitIncident: "Inyectar Incidente",
+    resolve: "Resolver",
+    redeploy: "Redesplegar Personal"
+  },
+  fr: {
+    appName: "Assistant Intelligent des Stades de la FIFA 2026",
+    tagline: "Plateforme d'Intelligence des Stades GenAI",
+    roleSelector: "Sélectionnez votre rôle",
+    stadiumSelector: "Sélectionner le site",
+    timeSelector: "Créneau horaire du match",
+    preMatch: "Avant-match (Ouverture des portes)",
+    midMatch: "Pendant le match",
+    postMatch: "Après-match (Sortie)",
+    
+    // Roles
+    fan: "Supporter",
+    volunteer: "Bénévole",
+    staff: "Personnel du Stade",
+    organizer: "Organisateur",
+    
+    // Menu / Tabs
+    tabWayfinding: "Plan du stade et Navigation",
+    tabAIChat: "Assistant Chat IA",
+    tabTransit: "Transit et Départ",
+    tabSustainability: "Eco Hub",
+    tabCommandCenter: "Centre d'Opérations",
+    
+    // Accessibility
+    accessTitle: "Paramètres d'accessibilité",
+    highContrast: "Interface Contraste Élevé",
+    largeText: "Texte Agrandi",
+    ttsActive: "Synthèse Vocale (TTS)",
+    screenReaderHelper: "Assistance pour lecteur d'écran",
+    sensorySens: "Route Sensorielle Calme",
+    wheelchairReq: "Itinéraire Accessible PMR",
+    
+    // UI Common
+    status: "Statut",
+    congestion: "Niveau d'encombrement",
+    queueTime: "Temps d'attente moyen",
+    minutes: "min",
+    load: "Charge",
+    actionRequired: "Action Requise",
+    alerts: "Alertes opérationnelles en direct",
+    noAlerts: "Tous les canaux opérationnels fonctionnent normalement.",
+    carbonEmissions: "Empreinte carbone",
+    travelMode: "Mode de transport",
+    selectStart: "Sélectionner le point de départ",
+    selectDest: "Sélectionner la destination",
+    findRoute: "Calculer l'itinéraire",
+    shortestRoute: "Chemin le plus court",
+    accessibleRoute: "Chemin accessible (Ascenseurs et Rampes)",
+    lowCrowdRoute: "Évitement des foules",
+    
+    // Chat specific
+    chatGreeting: "Bienvenue à la Coupe du Monde de la FIFA 2026. Comment puis-je vous aider aujourd'hui?",
+    chatPlaceholder: "Posez des questions sur les portes, l'accessibilité, les navettes ou les consignes bénévoles...",
+    sendMessage: "Envoyer",
+    clearChat: "Effacer la conversation",
+    smartPrompts: "Questions Fréquentes",
+    apiSettings: "Configuration de l'API IA",
+    apiKeyLabel: "Clé API OpenAI (Facultatif)",
+    apiWarning: "Si vide, s'exécute sur le moteur de contexte local sécurisé.",
+    
+    // Sustainability
+    sustainabilityScore: "Score Éco-Hub",
+    recycleGameTitle: "Défi Tri Éco",
+    recycleGameInstructions: "Glissez ou cliquez sur les déchets vers le bon bac pour gagner des éco-points!",
+    recycle: "Recycler",
+    compost: "Composter",
+    landfill: "Décharge",
+    score: "Score",
+    playAgain: "Réinitialiser",
+    ecoTips: "Conseils de Durabilité",
+    
+    // Ops Dashboard
+    opsTitle: "Tableau de bord de gestion de crise FIFA",
+    incidentsTitle: "Incidents Actifs",
+    queuesTitle: "Simulateur de File d'Attente",
+    reportedTime: "Heure du rapport",
+    assigned: "Assigné à",
+    severity: "Gravité",
+    quickActions: "Actions Suggérées par l'IA",
+    simulationControls: "Simulateur d'Encombrement du Stade",
+    simulateIncident: "Signaler un incident simulé",
+    incidentType: "Type d'incident",
+    incidentZone: "Zone de l'incident",
+    submitIncident: "Injecter l'incident",
+    resolve: "Résoudre",
+    redeploy: "Redéployer le personnel"
+  }
+};
