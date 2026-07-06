@@ -209,10 +209,10 @@ export default function AIChat({
   const isHC = accessibility.highContrast;
 
   return (
-    <div className={`flex flex-col h-[600px] rounded-2xl border overflow-hidden shadow-xl transition-all duration-300 ${
+    <div className={`flex flex-col h-[520px] lg:h-[565px] rounded-2xl border overflow-hidden shadow-xl transition-all duration-300 ${
       isHC 
         ? "bg-black border-yellow-400 text-yellow-300" 
-        : "bg-slate-900/40 backdrop-blur-lg border-slate-800 text-slate-100"
+        : "bg-slate-900/60 backdrop-blur-md border-slate-800/80 text-slate-100"
     }`}>
       {/* Chat Title / Settings Toggle */}
       <div className={`p-4 border-b flex items-center justify-between transition-colors ${

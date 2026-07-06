@@ -3,8 +3,33 @@
 @tailwind utilities;
 
 @layer utilities {
-  .animate-marquee {
-    animation: marquee 20s linear infinite;
+  .animate-flow {
+    stroke-dasharray: 6, 4;
+    animation: flow 1.2s linear infinite;
+  }
+  
+  .animate-pulse-ring {
+    animation: pulse-ring 1.8s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+  }
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
   }
 }
 
@@ -13,23 +38,40 @@
   100% { transform: translateX(-100%); }
 }
 
-/* Global scrollbar adjustments */
+/* Radar-Grid overlay for custom maps */
+.bg-radar-grid {
+  background-image: radial-gradient(rgba(226, 179, 60, 0.04) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(5, 15, 38, 0.8);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(226, 179, 60, 0.25);
+  background: rgba(226, 179, 60, 0.3);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(226, 179, 60, 0.5);
+  background: rgba(226, 179, 60, 0.6);
 }
 
-/* High contrast overrides */
+/* Glow effects */
+.glow-gold {
+  filter: drop-shadow(0 0 4px rgba(226, 179, 60, 0.6));
+}
+.glow-sky {
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));
+}
+.glow-green {
+  filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.6));
+}
+
+/* High contrast modifications */
 .dark-hc select, .dark-hc input, .dark-hc button {
   outline: 2px solid #facc15 !important;
 }
@@ -37,4 +79,7 @@
 body {
   margin: 0;
   background-color: #030712;
+  background-image: radial-gradient(circle at top right, rgba(11, 34, 101, 0.15), transparent 45%),
+                    radial-gradient(circle at bottom left, rgba(226, 179, 60, 0.03), transparent 35%);
+  background-attachment: fixed;
 }

@@ -7,7 +7,7 @@ import GreenZone from "./components/GreenZone";
 import OpsDashboard from "./components/OpsDashboard";
 import AccessibilityConfig from "./components/AccessibilityConfig";
 import { STADIUMS, INITIAL_INCIDENTS } from "./data/mockData";
-import { Accessibility, Eye, HelpCircle } from "lucide-react";
+import { Accessibility } from "lucide-react";
 
 export default function App() {
   const [role, setRole] = useState("fan");
@@ -57,6 +57,18 @@ export default function App() {
     setAlerts(prev => [newAlert, ...prev]);
   };
 
+  const chatComponent = (
+    <AIChat
+      role={role}
+      stadium={stadium}
+      timePhase={timePhase}
+      accessibility={accessibility}
+      language={language}
+      gates={gates}
+      incidents={incidents}
+    />
+  );
+
   const renderActiveTabContent = () => {
     switch (activeTab) {
       case "map":
@@ -68,18 +80,6 @@ export default function App() {
             language={language}
             gates={gates}
             zones={stadium.zones}
-          />
-        );
-      case "chat":
-        return (
-          <AIChat
-            role={role}
-            stadium={stadium}
-            timePhase={timePhase}
-            accessibility={accessibility}
-            language={language}
-            gates={gates}
-            incidents={incidents}
           />
         );
       case "transit":
@@ -134,15 +134,16 @@ export default function App() {
       accessibility={accessibility}
       setAccessibility={setAccessibility}
       alerts={alerts}
+      chatComponent={chatComponent}
     >
-      <div className="space-y-6">
+      <div className="space-y-5">
         
         {/* Active Tab Screen */}
         <section className="transition-all duration-300">
           {renderActiveTabContent()}
         </section>
 
-        {/* Quick Accessibility Config Section - always anchorable */}
+        {/* Accessibility configurations panel */}
         <section className="mt-8 border-t border-slate-900 pt-6">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-slate-400 font-extrabold uppercase text-[10px] tracking-widest flex items-center">
@@ -154,7 +155,7 @@ export default function App() {
               className={`text-xs px-3 py-1.5 rounded-lg border font-bold uppercase transition-all ${
                 showQuickAccess
                   ? (accessibility.highContrast ? "bg-yellow-400 text-black border-yellow-400" : "bg-slate-800 text-slate-100 border-slate-700")
-                  : "bg-slate-900 border-slate-850 text-slate-400 hover:text-slate-200"
+                  : "bg-slate-900 border-slate-850 text-slate-405 hover:text-slate-200"
               }`}
             >
               {showQuickAccess ? "Hide Panel" : "Expand Panels"}
