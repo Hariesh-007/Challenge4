@@ -124,7 +124,7 @@ Guardrails:
 /**
  * Heuristic fallback matching logic to simulate GenAI logic locally.
  */
-function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], incidents = [], timePhase = "") {
+function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], incidents = [], _timePhase = "") {
   const dict = LOCAL_RESPONSES[language] || LOCAL_RESPONSES.en;
   const lower = prompt.toLowerCase();
 
@@ -133,7 +133,6 @@ function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], 
     if (lower.includes("gate c") || lower.includes("accès c") || lower.includes("puerta c") || lower.includes("sur c")) {
       return dict.gateC_crowded;
     }
-    const gateCount = gates.length || 4;
     const avgQueue = gates.length ? Math.round(gates.reduce((acc, g) => acc + g.queueTime, 0) / gates.length) : 15;
     return dict.gate_general.replace("{avgQueue}", avgQueue);
   }
@@ -162,7 +161,7 @@ function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], 
   }
 
   // Transit / Metro / Shuttle
-  if (lower.includes("metro") || lower.includes("shuttle") || lower.includes("bus") || lower.includes("train") || lower.includes("transp") || lower.includes("navette") || lower.includes("llegar")) {
+  if (lower.includes("metro") || lower.includes("métro") || lower.includes("shuttle") || lower.includes("bus") || lower.includes("train") || lower.includes("transp") || lower.includes("navette") || lower.includes("llegar")) {
     let response = dict.transit;
     if (stadium && STADIUM_FACTS[stadium.id]) {
       response += ` ${STADIUM_FACTS[stadium.id].metro}`;
@@ -202,6 +201,12 @@ function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], 
   return dict.greeting;
 }
 
+export function sanitizeInput(text) {
+  if (typeof text !== "string") return "";
+  // Strip HTML elements and restrict length to prevent DoS payloads
+  return text.replace(/[<>]/g, "").slice(0, 800).trim();
+}
+
 /**
  * Core query router for the AI Assistant.
  * Connects to OpenAI if apiKey is set, otherwise utilizes the heuristic local response engine.
@@ -217,6 +222,7 @@ export async function queryAIAssistant({
   incidents = [],
   apiKey = ""
 }) {
+  const cleanPrompt = sanitizeInput(prompt);
   const systemPrompt = buildSystemPrompt(role, stadium, timePhase, accessibilityNeeds, language);
   
   if (apiKey && apiKey.trim() !== "") {
@@ -231,7 +237,7 @@ export async function queryAIAssistant({
           model: "gpt-4o-mini", // Cost-effective, fast and safe
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: prompt }
+            { role: "user", content: cleanPrompt }
           ],
           temperature: 0.3,
           max_tokens: 150
@@ -253,5 +259,5 @@ export async function queryAIAssistant({
 
   // Artificial delay to simulate thinking of GenAI
   await new Promise(resolve => setTimeout(resolve, 800));
-  return getLocalHeuristicResponse(prompt, role, stadium, language, gates, incidents, timePhase);
+  return getLocalHeuristicResponse(cleanPrompt, role, stadium, language, gates, incidents, timePhase);
 }

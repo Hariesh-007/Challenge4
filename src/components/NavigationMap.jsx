@@ -2,20 +2,15 @@ import React, { useState, useEffect } from "react";
 import { TRANSLATIONS } from "../data/translation";
 import { MAP_NODES, findRoute } from "../utils/routing";
 import { 
-  Navigation, 
-  MapPin, 
   Accessibility, 
   Clock, 
-  Activity, 
-  Droplet, 
-  Smile, 
   TrendingDown,
   Info,
   Maximize2
 } from "lucide-react";
 
 export default function NavigationMap({
-  role,
+  _role,
   stadium,
   accessibility,
   language,
@@ -136,7 +131,7 @@ export default function NavigationMap({
           <div className={`md:col-span-2 relative p-4 rounded-xl border flex items-center justify-center bg-radar-grid ${
             isHC ? "bg-black border-yellow-400" : "bg-slate-950/80 border-slate-900/60"
           }`}>
-            <svg viewBox="0 0 300 250" className="w-full max-w-[380px] h-auto select-none">
+            <svg viewBox="0 0 300 250" role="img" aria-label="Interactive stadium map showing gates, sections, and wayfinding routes" className="w-full max-w-[380px] h-auto select-none">
               
               {/* Neon Glow Filters Definitions */}
               <defs>
@@ -243,8 +238,17 @@ export default function NavigationMap({
                 return (
                   <g 
                     key={node.id} 
-                    className="cursor-pointer"
+                    className="cursor-pointer focus:outline-none focus:ring-1 focus:ring-fifa-gold rounded-full"
                     onClick={() => handleNodeClick(node.id)}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Select ${node.name} node`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleNodeClick(node.id);
+                      }
+                    }}
                   >
                     {/* Radar Pulse for starts & destinations */}
                     {isStart && (

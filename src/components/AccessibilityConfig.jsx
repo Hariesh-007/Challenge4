@@ -7,7 +7,6 @@ import {
   Ear, 
   Smile, 
   MapPin,
-  HelpCircle,
   ToggleLeft,
   ToggleRight
 } from "lucide-react";

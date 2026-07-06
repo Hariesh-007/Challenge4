@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { TRANSLATIONS } from "../data/translation";
 import { TRANSIT_OPTIONS } from "../data/mockData";
 import { 
-  Navigation, 
   Leaf, 
   Train, 
   Bus, 
@@ -10,12 +9,11 @@ import {
   Footprints, 
   Clock, 
   MapPin, 
-  HelpCircle,
   AlertCircle
 } from "lucide-react";
 
 export default function TransitHub({
-  role,
+  _role,
   stadium,
   timePhase,
   language,

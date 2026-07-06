@@ -1,33 +1,40 @@
 import { describe, it, expect } from "vitest";
-import { findRoute, MAP_NODES } from "../utils/routing";
+import { findRoute } from "../utils/routing";
 
 describe("Wayfinding Routing Engine Tests", () => {
   it("should calculate the shortest path between Metro and Seating North Stand", () => {
-    // Route from 'metro' to 'seating-n'
     const route = findRoute("metro", "seating-n", "shortest");
-    
-    expect(route).toBeDefined();
+    expect(route).not.toBeNull();
     expect(route.path.length).toBeGreaterThan(2);
     expect(route.path[0].id).toBe("metro");
     expect(route.path[route.path.length - 1].id).toBe("seating-n");
   });
 
+  it("should return null for invalid start or destination nodes", () => {
+    const invalidStart = findRoute("unknown-node", "seating-n", "shortest");
+    const invalidDest = findRoute("metro", "another-fake-node", "shortest");
+    expect(invalidStart).toBeNull();
+    expect(invalidDest).toBeNull();
+  });
+
+  it("should return a 0-distance path if start equals destination", () => {
+    const route = findRoute("metro", "metro", "shortest");
+    expect(route).not.toBeNull();
+    expect(route.totalDistance).toBe(0);
+    expect(route.path.length).toBe(1);
+    expect(route.path[0].id).toBe("metro");
+    expect(route.steps.length).toBe(0);
+  });
+
   it("should filter out inaccessible stairs when routing in accessible mode", () => {
-    // Metro to Seating Section E (which requires elevator / has stairs)
-    // accessible route should fail or divert because seating-e requires stairs and node-accessible is false
     const standardRoute = findRoute("metro", "seating-e", "shortest");
     const accessibleRoute = findRoute("metro", "seating-e", "accessible");
 
-    // Standard route finds a path
     expect(standardRoute).not.toBeNull();
-    
-    // Accessible route should fail to find a path because seating-e itself requires elevator which is filtered out
-    expect(accessibleRoute).toBeNull();
+    expect(accessibleRoute).toBeNull(); // Seating E requires stairs
   });
 
   it("should apply queue time congestion weights in low-crowd mode", () => {
-    // From parking to Concourse West. Shortest path is through Gate D (90 dist).
-    // If Gate D is overcrowded, the low-crowd mode should redirect via Gate C (260 weight)
     const gates = [
       { id: "gate-a", name: "Gate A", status: "normal", queueTime: 5, load: 20 },
       { id: "gate-b", name: "Gate B", status: "normal", queueTime: 5, load: 20 },
@@ -38,15 +45,10 @@ describe("Wayfinding Routing Engine Tests", () => {
     const shortestRoute = findRoute("parking", "concourse-w", "shortest", gates, []);
     const lowCrowdRoute = findRoute("parking", "concourse-w", "low-crowd", gates, []);
 
-    // Both find paths
     expect(shortestRoute).not.toBeNull();
     expect(lowCrowdRoute).not.toBeNull();
-
-    // Shortest distance should be 90 (parking -> gate-d -> concourse-w)
     expect(shortestRoute.totalDistance).toBe(90);
-
-    // Low crowd route should divert via gate-c, with distance 260
-    expect(lowCrowdRoute.totalDistance).toBe(260);
+    expect(lowCrowdRoute.totalDistance).toBe(260); // Diverts via Gate C due to penalty on D
     expect(lowCrowdRoute.totalDistance).toBeGreaterThan(shortestRoute.totalDistance);
   });
 });

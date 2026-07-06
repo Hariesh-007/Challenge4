@@ -7,15 +7,12 @@ import {
   MessageSquare, 
   Navigation, 
   Leaf, 
-  Eye, 
   Globe, 
   Bell, 
   Clock, 
   User, 
-  HelpCircle,
   Menu,
   X,
-  Calendar,
   Thermometer,
   Ticket
 } from "lucide-react";
@@ -32,7 +29,6 @@ export default function Layout({
   activeTab,
   setActiveTab,
   accessibility,
-  setAccessibility,
   alerts,
   chatComponent,
   children
@@ -153,6 +149,7 @@ export default function Layout({
             {/* Mobile menu trigger */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle Navigation Menu"
               className="lg:hidden p-1.5 rounded-lg bg-slate-900 border border-slate-800"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -177,6 +174,7 @@ export default function Layout({
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
+                aria-label={t.roleSelector}
                 className={`py-1 px-2.5 rounded-lg border text-xs font-semibold focus:outline-none focus:ring-1 ${
                   isHC 
                     ? "bg-black border-yellow-400 text-yellow-300" 
@@ -198,6 +196,7 @@ export default function Layout({
               <select
                 value={stadium.id}
                 onChange={(e) => setStadium(STADIUMS[e.target.value])}
+                aria-label={t.stadiumSelector}
                 className={`py-1 px-2.5 rounded-lg border text-xs font-semibold focus:outline-none focus:ring-1 ${
                   isHC 
                     ? "bg-black border-yellow-400 text-yellow-300" 
@@ -218,6 +217,7 @@ export default function Layout({
               <select
                 value={timePhase}
                 onChange={(e) => setTimePhase(e.target.value)}
+                aria-label={t.timeSelector}
                 className={`py-1 px-2.5 rounded-lg border text-xs font-semibold focus:outline-none focus:ring-1 ${
                   isHC 
                     ? "bg-black border-yellow-400 text-yellow-300" 
@@ -239,6 +239,7 @@ export default function Layout({
                 <button
                   key={lang}
                   onClick={() => setLanguage(lang)}
+                  aria-label={`Switch language to ${lang.toUpperCase()}`}
                   className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase transition-all ${
                     language === lang 
                       ? (isHC ? "bg-yellow-400 text-black" : "bg-fifa-blue text-white")
@@ -338,6 +339,7 @@ export default function Layout({
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
+                  aria-label={`Navigate to ${item.label}`}
                   className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl border text-left font-bold text-[10px] uppercase tracking-wider transition-all duration-200 ${
                     isActive 
                       ? (isHC 
@@ -345,7 +347,7 @@ export default function Layout({
                           : "bg-gradient-to-r from-fifa-blue to-blue-750 border-blue-650 text-white shadow shadow-blue-900/30") 
                       : (isHC
                           ? "bg-black border-yellow-400 text-yellow-300 hover:bg-neutral-900"
-                          : "bg-slate-900/30 border-slate-900/60 text-slate-450 hover:bg-slate-900/60 hover:text-slate-200")
+                          : "bg-slate-900/30 border-slate-900/60 text-slate-455 hover:bg-slate-900/60 hover:text-slate-200")
                   }`}
                 >
                   <Icon className={`h-4.5 w-4.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
@@ -361,6 +363,7 @@ export default function Layout({
           <div className="lg:hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md pt-20 px-6 flex flex-col space-y-4">
             <button 
               onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close mobile menu"
               className="absolute top-4 right-4 p-2 rounded-lg bg-slate-900 border border-slate-800"
             >
               <X className="h-6 w-6 text-white" />
@@ -376,6 +379,7 @@ export default function Layout({
                     setActiveTab(item.id);
                     setMobileMenuOpen(false);
                   }}
+                  aria-label={`Navigate to ${item.label}`}
                   className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl border text-left font-bold text-sm uppercase tracking-wide transition-all ${
                     isActive 
                       ? "bg-fifa-blue border-blue-600 text-white" 

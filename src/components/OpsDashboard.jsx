@@ -56,15 +56,19 @@ export default function OpsDashboard({
     e.preventDefault();
     if (!incTitle.trim()) return;
 
+    // Secure input sanitization
+    const cleanTitle = incTitle.replace(/[<>]/g, "").slice(0, 80).trim();
+    const cleanDesc = incDesc.replace(/[<>]/g, "").slice(0, 250).trim();
+
     const newInc = {
       id: `inc-${Date.now()}`,
       type: incType,
       status: "open",
       severity: incSeverity,
-      title: incTitle,
+      title: cleanTitle,
       stadium: stadium.id,
       zone: incZone,
-      description: incDesc || `Simulated ${incType} occurrence reported.`,
+      description: cleanDesc || `Simulated ${incType} occurrence reported.`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       assignedTo: "Quick Response Unit"
     };
@@ -102,7 +106,7 @@ export default function OpsDashboard({
     }));
   };
 
-  const handleTriggerRedeployment = (srcGateId, destGateId) => {
+  const handleTriggerRedeployment = (srcGateId, _destGateId) => {
     // Simulate re-routing volunteers to lower queue time
     setGates(prev => prev.map(g => {
       if (g.id === srcGateId) {
@@ -461,6 +465,21 @@ export default function OpsDashboard({
                 <option value="East Stand">East Stand</option>
                 <option value="South Stand">South Stand (Fan Zone)</option>
                 <option value="West Stand">West Stand</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">{t.severity}</label>
+              <select
+                value={incSeverity}
+                onChange={(e) => setIncSeverity(e.target.value)}
+                className={`w-full py-1.5 px-3 rounded-lg border text-xs focus:outline-none ${
+                  isHC ? "bg-black border-yellow-400 text-yellow-300" : "bg-slate-950 border-slate-850 text-white"
+                }`}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
               </select>
             </div>
 

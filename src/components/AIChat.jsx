@@ -8,11 +8,8 @@ import {
   VolumeX, 
   Settings, 
   Sparkles, 
-  CheckCircle,
   AlertTriangle,
-  User,
-  Shield,
-  HelpCircle
+  User
 } from "lucide-react";
 
 export default function AIChat({
@@ -146,7 +143,7 @@ export default function AIChat({
       return;
     }
 
-    const cleanedText = text.replace(/[*#`_\-]/g, ""); // Strip markdown characters
+    const cleanedText = text.replace(/[*#`_-]/g, ""); // Strip markdown characters
     const utterance = new SpeechSynthesisUtterance(cleanedText);
     
     // Attempt to match voice language
@@ -239,6 +236,7 @@ export default function AIChat({
           <button
             onClick={() => handleClearChat()}
             title={t.clearChat}
+            aria-label="Clear chat history"
             className={`p-1.5 rounded-lg border transition-colors ${
               isHC ? "border-yellow-400 hover:bg-neutral-800" : "border-slate-800 bg-slate-950/60 hover:bg-slate-900"
             }`}
@@ -247,6 +245,7 @@ export default function AIChat({
           </button>
           <button
             onClick={() => setShowSettings(!showSettings)}
+            aria-label="Toggle AI API configuration settings"
             className={`p-1.5 rounded-lg border transition-colors ${
               showSettings 
                 ? (isHC ? "bg-yellow-400 text-black border-yellow-400" : "bg-fifa-blue text-white border-blue-600")
@@ -411,6 +410,7 @@ export default function AIChat({
         />
         <button
           type="submit"
+          aria-label="Send message"
           className={`p-2 rounded-xl transition-all ${
             isHC
               ? "bg-yellow-400 hover:bg-yellow-500 text-black"

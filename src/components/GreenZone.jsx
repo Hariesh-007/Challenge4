@@ -3,7 +3,6 @@ import { TRANSLATIONS } from "../data/translation";
 import { SUSTAINABILITY_GAME } from "../data/mockData";
 import { 
   Leaf, 
-  Trash2, 
   RefreshCw, 
   Award, 
   Sun, 
