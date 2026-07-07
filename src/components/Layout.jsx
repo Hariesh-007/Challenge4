@@ -111,7 +111,7 @@ export default function Layout({
 
   const isHC = accessibility.highContrast;
   const contrastClass = isHC 
-    ? "bg-black text-yellow-300 border-yellow-400" 
+    ? "bg-black text-yellow-300 border-yellow-400 dark-hc" 
     : "bg-slate-950 text-slate-100 border-slate-900";
 
   return (
@@ -168,10 +168,11 @@ export default function Layout({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1 max-w-4xl">
             {/* Role Select */}
             <div className="flex flex-col">
-              <label className="text-[9px] uppercase font-bold text-slate-500 tracking-wider mb-0.5 flex items-center">
+              <label htmlFor="role-select" className="text-[9px] uppercase font-bold text-slate-500 tracking-wider mb-0.5 flex items-center">
                 <User className="h-3 w-3 mr-1 text-fifa-gold" /> {t.roleSelector}
               </label>
               <select
+                id="role-select"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 aria-label={t.roleSelector}
@@ -190,10 +191,11 @@ export default function Layout({
 
             {/* Stadium Select */}
             <div className="flex flex-col">
-              <label className="text-[9px] uppercase font-bold text-slate-500 tracking-wider mb-0.5 flex items-center">
+              <label htmlFor="venue-select" className="text-[9px] uppercase font-bold text-slate-500 tracking-wider mb-0.5 flex items-center">
                 <Map className="h-3 w-3 mr-1 text-fifa-gold" /> {t.stadiumSelector}
               </label>
               <select
+                id="venue-select"
                 value={stadium.id}
                 onChange={(e) => setStadium(STADIUMS[e.target.value])}
                 aria-label={t.stadiumSelector}
@@ -211,10 +213,11 @@ export default function Layout({
 
             {/* Match Phase Select */}
             <div className="flex flex-col">
-              <label className="text-[9px] uppercase font-bold text-slate-500 tracking-wider mb-0.5 flex items-center">
+              <label htmlFor="phase-select" className="text-[9px] uppercase font-bold text-slate-500 tracking-wider mb-0.5 flex items-center">
                 <Clock className="h-3 w-3 mr-1 text-fifa-gold" /> {t.timeSelector}
               </label>
               <select
+                id="phase-select"
                 value={timePhase}
                 onChange={(e) => setTimePhase(e.target.value)}
                 aria-label={t.timeSelector}

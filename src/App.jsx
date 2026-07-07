@@ -146,10 +146,10 @@ export default function App() {
         {/* Accessibility configurations panel */}
         <section className="mt-8 border-t border-slate-900 pt-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-slate-400 font-extrabold uppercase text-[10px] tracking-widest flex items-center">
+            <h3 className="text-slate-400 font-extrabold uppercase text-[10px] tracking-widest flex items-center">
               <Accessibility className="h-4 w-4 mr-1 text-fifa-gold" />
               Dynamic Comfort & Accessibility Settings
-            </h4>
+            </h3>
             <button
               onClick={() => setShowQuickAccess(!showQuickAccess)}
               className={`text-xs px-3 py-1.5 rounded-lg border font-bold uppercase transition-all ${

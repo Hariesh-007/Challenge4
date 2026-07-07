@@ -286,10 +286,11 @@ export default function NavigationMap({
           <div className="space-y-4 flex flex-col justify-between">
             <div className="space-y-3.5">
               <div>
-                <label className="text-[9px] uppercase font-bold text-slate-400 mb-1 block">
+                <label htmlFor="start-node-select" className="text-[9px] uppercase font-bold text-slate-400 mb-1 block">
                   {t.selectStart}
                 </label>
                 <select
+                  id="start-node-select"
                   value={startNode}
                   onChange={(e) => setStartNode(e.target.value)}
                   className={`w-full py-1.5 px-3 rounded-lg border text-xs font-semibold focus:outline-none ${
@@ -305,10 +306,11 @@ export default function NavigationMap({
               </div>
 
               <div>
-                <label className="text-[9px] uppercase font-bold text-slate-400 mb-1 block">
+                <label htmlFor="dest-node-select" className="text-[9px] uppercase font-bold text-slate-400 mb-1 block">
                   {t.selectDest}
                 </label>
                 <select
+                  id="dest-node-select"
                   value={destNode}
                   onChange={(e) => setDestNode(e.target.value)}
                   className={`w-full py-1.5 px-3 rounded-lg border text-xs font-semibold focus:outline-none ${

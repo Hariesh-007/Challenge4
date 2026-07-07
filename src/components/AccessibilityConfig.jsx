@@ -27,8 +27,14 @@ export default function AccessibilityConfig({
   };
 
   // Custom Toggle switch renderer
-  const ToggleSwitch = ({ active, onClick }) => (
-    <button onClick={onClick} className="focus:outline-none transition-colors">
+  const ToggleSwitch = ({ active, onClick, label }) => (
+    <button 
+      onClick={onClick} 
+      role="switch"
+      aria-checked={active}
+      aria-label={label}
+      className="focus:outline-none focus:ring-1 focus:ring-fifa-gold rounded transition-colors"
+    >
       {active ? (
         <ToggleRight className={`h-8 w-8 ${isHC ? 'text-yellow-400' : 'text-emerald-500'}`} />
       ) : (
@@ -77,6 +83,7 @@ export default function AccessibilityConfig({
               <ToggleSwitch 
                 active={accessibility[item.key]} 
                 onClick={() => toggleSetting(item.key)} 
+                label={item.label}
               />
             </div>
           );

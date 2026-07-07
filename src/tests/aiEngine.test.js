@@ -62,6 +62,44 @@ describe("GenAI Context Engine and Sanitization Tests", () => {
       accessibilityNeeds: { wheelchair: false, sensory: false },
       language: "en"
     });
-    expect(responseVolunteer).toContain("Volunteer Protocol");
+    expect(responseVolunteer).toContain("Volunteer Duty Checklist");
+  });
+
+  it("should output dynamic state-aware details (incidents, queues) for organizers and staff", async () => {
+    const mockGates = [
+      { id: "gate-a", name: "Gate A", status: "overcrowded", queueTime: 35, load: 95 }
+    ];
+    const mockIncidents = [
+      { id: "inc-99", stadium: "bcplace", severity: "high", title: "Power Outage", zone: "West Concourse", description: "Grid failure", status: "open" }
+    ];
+
+    const organizerRes = await queryAIAssistant({
+      prompt: "show summary",
+      role: "organizer",
+      stadium: { id: "bcplace", name: "BC Place" },
+      timePhase: "mid-match",
+      accessibilityNeeds: { wheelchair: false, sensory: false },
+      language: "en",
+      gates: mockGates,
+      incidents: mockIncidents
+    });
+
+    expect(organizerRes).toContain("Incident Command Summary Report");
+    expect(organizerRes).toContain("Stadium Egress Load: 95%");
+    expect(organizerRes).toContain("Power Outage in West Concourse");
+
+    const staffRes = await queryAIAssistant({
+      prompt: "show safety alert",
+      role: "staff",
+      stadium: { id: "bcplace", name: "BC Place" },
+      timePhase: "mid-match",
+      accessibilityNeeds: { wheelchair: false, sensory: false },
+      language: "en",
+      gates: mockGates,
+      incidents: mockIncidents
+    });
+
+    expect(staffRes).toContain("Staff Action Directive");
+    expect(staffRes).toContain("CRITICAL INCIDENT: \"Power Outage\" reported in West Concourse");
   });
 });

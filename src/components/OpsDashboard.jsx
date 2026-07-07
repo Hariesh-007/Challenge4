@@ -256,6 +256,7 @@ export default function OpsDashboard({
                   max="45"
                   value={g.queueTime}
                   onChange={(e) => handleModulateQueue(g.id, e.target.value)}
+                  aria-label={`Queue time modulation for ${g.name}`}
                   className="w-full accent-fifa-gold bg-slate-950 h-1.5 rounded"
                 />
               </div>
@@ -423,8 +424,9 @@ export default function OpsDashboard({
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Incident Title</label>
+              <label htmlFor="inc-title-input" className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Incident Title</label>
               <input
+                id="inc-title-input"
                 type="text"
                 required
                 value={incTitle}
@@ -437,8 +439,9 @@ export default function OpsDashboard({
             </div>
 
             <div>
-              <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">{t.incidentType}</label>
+              <label htmlFor="inc-type-select" className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">{t.incidentType}</label>
               <select
+                id="inc-type-select"
                 value={incType}
                 onChange={(e) => setIncType(e.target.value)}
                 className={`w-full py-1.5 px-3 rounded-lg border text-xs focus:outline-none ${
@@ -453,8 +456,9 @@ export default function OpsDashboard({
             </div>
 
             <div>
-              <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">{t.incidentZone}</label>
+              <label htmlFor="inc-zone-select" className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">{t.incidentZone}</label>
               <select
+                id="inc-zone-select"
                 value={incZone}
                 onChange={(e) => setIncZone(e.target.value)}
                 className={`w-full py-1.5 px-3 rounded-lg border text-xs focus:outline-none ${
@@ -469,8 +473,9 @@ export default function OpsDashboard({
             </div>
 
             <div>
-              <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">{t.severity}</label>
+              <label htmlFor="inc-severity-select" className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">{t.severity}</label>
               <select
+                id="inc-severity-select"
                 value={incSeverity}
                 onChange={(e) => setIncSeverity(e.target.value)}
                 className={`w-full py-1.5 px-3 rounded-lg border text-xs focus:outline-none ${

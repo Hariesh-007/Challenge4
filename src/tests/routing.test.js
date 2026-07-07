@@ -51,4 +51,12 @@ describe("Wayfinding Routing Engine Tests", () => {
     expect(lowCrowdRoute.totalDistance).toBe(260); // Diverts via Gate C due to penalty on D
     expect(lowCrowdRoute.totalDistance).toBeGreaterThan(shortestRoute.totalDistance);
   });
+
+  it("should return null in accessible mode if start or destination nodes themselves are not accessible", () => {
+    const routeInaccessibleStart = findRoute("gate-c", "seating-n", "accessible");
+    const routeInaccessibleDest = findRoute("metro", "seating-e", "accessible");
+
+    expect(routeInaccessibleStart).toBeNull();
+    expect(routeInaccessibleDest).toBeNull();
+  });
 });

@@ -78,6 +78,13 @@ export const MAP_EDGES = [
 export function findRoute(startId, endId, mode, stadiumGates = [], stadiumZones = []) {
   if (!MAP_NODES[startId] || !MAP_NODES[endId]) return null;
 
+  // Accessibility check: start and destination must be accessible in accessible mode
+  if (mode === "accessible") {
+    if (MAP_NODES[startId].accessible === false || MAP_NODES[endId].accessible === false) {
+      return null;
+    }
+  }
+
   // Build graph representations
   const adjacencyList = {};
   Object.keys(MAP_NODES).forEach(nodeId => {

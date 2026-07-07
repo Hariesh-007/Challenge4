@@ -266,9 +266,10 @@ export default function AIChat({
             <Settings className="h-3.5 w-3.5 mr-1" /> {t.apiSettings}
           </h4>
           <div className="flex flex-col space-y-2">
-            <label className="text-[10px] text-slate-400 font-bold uppercase">{t.apiKeyLabel}</label>
+            <label htmlFor="openai-api-key-input" className="text-[10px] text-slate-400 font-bold uppercase">{t.apiKeyLabel}</label>
             <div className="flex gap-2">
               <input
+                id="openai-api-key-input"
                 type="password"
                 placeholder="sk-..."
                 value={apiKey}
@@ -331,6 +332,7 @@ export default function AIChat({
                       onClick={() => speakText(msg.text)}
                       className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-slate-800 transition-opacity text-slate-400 hover:text-white"
                       title={t.ttsActive}
+                      aria-label="Speak text aloud"
                     >
                       {isSpeaking ? <VolumeX className="h-3 w-3" /> : <Volume2 className="h-3 w-3" />}
                     </button>
@@ -402,6 +404,7 @@ export default function AIChat({
           placeholder={t.chatPlaceholder}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          aria-label={t.chatPlaceholder}
           className={`flex-1 py-2 px-4 rounded-xl border text-xs focus:outline-none ${
             isHC
               ? "bg-black border-yellow-400 text-yellow-300 focus:ring-1 focus:ring-yellow-400"

@@ -90,6 +90,7 @@ export default function TransitHub({
             max="50"
             value={distance}
             onChange={(e) => setDistance(parseInt(e.target.value))}
+            aria-label="Specify Travel Distance to Stadium"
             className="w-full accent-emerald-500 bg-slate-900 h-1.5 rounded"
           />
         </div>
