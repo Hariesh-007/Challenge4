@@ -8,8 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-  "deploy": "gh-pages -d dist"
+    "test": "vitest run"
   },
   "dependencies": {
     "lucide-react": "^1.23.0",
