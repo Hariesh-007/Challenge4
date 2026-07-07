@@ -124,7 +124,6 @@ export default function App() {
       case "map":
         return (
           <NavigationMap
-            role={role}
             stadium={stadium}
             accessibility={accessibility}
             language={language}
@@ -135,7 +134,6 @@ export default function App() {
       case "transit":
         return (
           <TransitHub
-            role={role}
             stadium={stadium}
             timePhase={timePhase}
             language={language}
