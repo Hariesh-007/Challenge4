@@ -445,8 +445,8 @@ export async function queryAIAssistant({
   if (apiKey && apiKey.trim() !== "") {
     const cleanApiKey = apiKey.trim();
     // Validate API Key format to prevent malicious headers (Security enhancement)
-    if (!/^[a-zA-Z0-9\-_]{20,160}$/.test(cleanApiKey)) {
-      throw new Error("Invalid API key format. It should only contain alphanumeric characters, hyphens, and underscores.");
+    if (!/^sk-[a-zA-Z0-9\-_]{20,160}$/.test(cleanApiKey)) {
+      throw new Error("Invalid API key format. It should start with 'sk-' and only contain alphanumeric characters, hyphens, and underscores.");
     }
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
