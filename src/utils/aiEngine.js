@@ -145,9 +145,70 @@ Guardrails:
 /**
  * Heuristic fallback matching logic to simulate GenAI logic locally.
  */
-function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], incidents = [], _timePhase = "") {
+function compileOperationalReport(stadium, gates, incidents, timePhase, language) {
+  const activeIncs = (incidents || []).filter(i => i.status !== "resolved");
+  const overcrowdedGates = (gates || []).filter(g => g.status === "overcrowded");
+  const congestedGates = (gates || []).filter(g => g.status === "congested");
+  const stadiumName = stadium ? stadium.name : "FIFA Stadium";
+  const currentPhase = timePhase || "active matchday";
+
+  if (language === "es") {
+    return `📋 **INFORME DE INTELIGENCIA OPERACIONAL EN VIVO**
+Sede: ${stadiumName} | Fase: ${currentPhase.toUpperCase()}
+
+**1. Análisis de Incidentes Activos:**
+${activeIncs.length > 0 
+  ? activeIncs.map(i => `- [${i.severity.toUpperCase()}] ${i.title} en ${i.zone}`).join("\n")
+  : "- No hay incidentes activos reportados."}
+
+**2. Puntos de Presión de Entrada/Salida:**
+- Puertas Saturadas: ${overcrowdedGates.length > 0 ? overcrowdedGates.map(g => g.name).join(", ") : "Ninguna"}
+- Puertas Congestionadas: ${congestedGates.length > 0 ? congestedGates.map(g => g.name).join(", ") : "Ninguna"}
+
+**3. Directivas Sugeridas por IA:**
+${activeIncs.some(i => i.type === "medical") ? "- [CRÍTICO] Despejar carriles de evacuación para respuesta médica rápida.\n" : ""}${overcrowdedGates.length > 0 ? "- [FLUJO] Iniciar desvíos y redistribuir personal de apoyo a las puertas saturadas.\n" : ""}- Mantener el monitoreo de los canales de tránsito.`;
+  } else if (language === "fr") {
+    return `📋 **RAPPORT D'INTELLIGENCE OPÉRATIONNELLE EN DIRECT**
+Site: ${stadiumName} | Phase: ${currentPhase.toUpperCase()}
+
+**1. Analyse des Incidents Actifs:**
+${activeIncs.length > 0 
+  ? activeIncs.map(i => `- [${i.severity.toUpperCase()}] ${i.title} à la zone ${i.zone}`).join("\n")
+  : "- Aucun incident actif signalé."}
+
+**2. Pressions aux Portes d'Accès:**
+- Portes Saturation: ${overcrowdedGates.length > 0 ? overcrowdedGates.map(g => g.name).join(", ") : "Aucune"}
+- Portes Encombrées: ${congestedGates.length > 0 ? congestedGates.map(g => g.name).join(", ") : "Aucune"}
+
+**3. Directives Opérationnelles IA:**
+${activeIncs.some(i => i.type === "medical") ? "- [DÉGAGEMENT] Libérer les voies d'accès Est pour intervention médicale.\n" : ""}${overcrowdedGates.length > 0 ? "- [FLUX] Mettre en place des déviations et réaffecter des bénévoles aux entrées saturées.\n" : ""}- Maintenir la surveillance des canaux de transport.`;
+  } else {
+    return `📋 **LIVE MATCHDAY OPERATIONAL HEALTH REPORT**
+Venue: ${stadiumName} | Phase: ${currentPhase.toUpperCase()}
+
+**1. Active Incident Risk Registry:**
+${activeIncs.length > 0 
+  ? activeIncs.map(i => `- [${i.severity.toUpperCase()}] ${i.title} at ${i.zone}`).join("\n")
+  : "- No active incidents reported in this sector."}
+
+**2. Gate Entry & Egress Pressures:**
+- Overcrowded Entries: ${overcrowdedGates.length > 0 ? overcrowdedGates.map(g => g.name).join(", ") : "None"}
+- Congested Entries: ${congestedGates.length > 0 ? congestedGates.map(g => g.name).join(", ") : "None"}
+
+**3. AI Incident Command Directives:**
+${activeIncs.some(i => i.type === "medical") ? "- [IMMEDIATE] Clear emergency transit lanes for emergency medical dispatch.\n" : ""}${overcrowdedGates.length > 0 ? "- [DETOUR] Engage entry gates detour mapping and shift volunteers to high-load doors.\n" : ""}- Continue routine safety checks across concourses.`;
+  }
+}
+
+function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], incidents = [], timePhase = "") {
   const dict = LOCAL_RESPONSES[language] || LOCAL_RESPONSES.en;
   const lower = prompt.toLowerCase();
+
+  // Live operational summaries & incident reports (Organizer / Staff Command)
+  const isOpsReportQuery = ["report", "summary", "incident", "status", "resumen", "informe", "rapport", "synthèse"].some(kw => lower.includes(kw));
+  if (isOpsReportQuery && (role === "organizer" || role === "staff")) {
+    return compileOperationalReport(stadium, gates, incidents, timePhase, language);
+  }
 
   // Gates and Congestion queries
   if (lower.includes("gate") || lower.includes("entrada") || lower.includes("porte") || lower.includes("accès")) {
@@ -208,16 +269,14 @@ function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], 
     return dict.staff_action;
   }
 
-  if (role === "organizer" || lower.includes("summary") || lower.includes("command") || lower.includes("report")) {
-    const activeInc = incidents.filter(i => i.status !== "resolved").length;
-    const capacityLoad = Math.round(gates.reduce((acc, g) => acc + g.load, 0) / (gates.length || 1)) || 55;
-    return dict.organizer_summary.replace("{load}", capacityLoad).replace("{incidents}", activeInc);
+  if (role === "organizer") {
+    return compileOperationalReport(stadium, gates, incidents, timePhase, language);
   }
 
   // Fallback depending on role
   if (role === "volunteer") return dict.volunteer_task;
   if (role === "staff") return dict.staff_action;
-  if (role === "organizer") return dict.organizer_summary.replace("{load}", 62).replace("{incidents}", incidents.filter(i => i.status !== "resolved").length);
+  if (role === "organizer") return compileOperationalReport(stadium, gates, incidents, timePhase, language);
 
   return dict.greeting;
 }

@@ -86,9 +86,9 @@ describe("GenAI Context Engine and Sanitization Tests", () => {
       incidents: mockIncidents
     });
 
-    expect(organizerRes).toContain("Incident Commander Summary");
-    expect(organizerRes).toContain("capacity load is 95%");
-    expect(organizerRes).toContain("1 open incidents");
+    expect(organizerRes).toContain("LIVE MATCHDAY OPERATIONAL HEALTH REPORT");
+    expect(organizerRes).toContain("Active Incident Risk Registry");
+    expect(organizerRes).toContain("Power Outage");
 
     const staffRes = await queryAIAssistant({
       prompt: "show safety alert",
