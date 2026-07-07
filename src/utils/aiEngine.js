@@ -252,10 +252,10 @@ function tryDynamicRouteSearch(prompt, role, stadium, accessibilityNeeds, gates,
 
   // Try to find if a specific start node is mentioned
   const fromPatterns = [
-    /from\s+([a-zA-Z0-9\s\-]+)/i,
-    /desde\s+([a-zA-Z0-9\s\-]+)/i,
-    /de\s+([a-zA-Z0-9\s\-]+)/i,
-    /depuis\s+([a-zA-Z0-9\s\-]+)/i
+    /from\s+([a-zA-Z0-9\s-]+)/i,
+    /desde\s+([a-zA-Z0-9\s-]+)/i,
+    /de\s+([a-zA-Z0-9\s-]+)/i,
+    /depuis\s+([a-zA-Z0-9\s-]+)/i
   ];
 
   let startPhrase = "";

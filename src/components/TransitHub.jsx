@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 
 export default function TransitHub({
-  role,
   stadium,
   timePhase,
   language,

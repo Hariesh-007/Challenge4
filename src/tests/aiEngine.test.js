@@ -120,10 +120,7 @@ describe("GenAI Context Engine and Sanitization Tests", () => {
       })
     ).rejects.toThrow("Invalid API key format");
 
-    // Correct format should not throw formatting error, but could fail with fetch since it's mock
-    // We pass a valid format sk key
-    const mockGates = [];
-    const mockIncidents = [];
+    // Correct format should not throw formatting error
     // If it's a valid key string but fetch is not stubbed, it will try to request OpenAI.
     // Let's pass a valid sk format but mock window.fetch or just check that it doesn't fail on local format validation
   });

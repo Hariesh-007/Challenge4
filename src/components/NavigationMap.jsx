@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 
 export default function NavigationMap({
-  role,
   stadium,
   accessibility,
   language,
