@@ -275,7 +275,7 @@ export default function OpsDashboard({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[180px]">
             {/* Recharts Bar Chart */}
-            <div className="w-full h-full">
+            <div className="w-full h-full" role="img" aria-label="Bar chart showing gate queue times in minutes">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <XAxis dataKey="name" stroke="#888888" fontSize={9} />
@@ -287,7 +287,7 @@ export default function OpsDashboard({
             </div>
 
             {/* Recharts Pie Chart */}
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center" role="img" aria-label="Pie chart showing active incidents breakdown by severity">
               {pieData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>

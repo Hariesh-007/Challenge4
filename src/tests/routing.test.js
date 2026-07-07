@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { findRoute } from "../utils/routing";
+import { findRoute, MAP_NODES, MAP_EDGES } from "../utils/routing";
 
 describe("Wayfinding Routing Engine Tests", () => {
   it("should calculate the shortest path between Metro and Seating North Stand", () => {
@@ -58,5 +58,12 @@ describe("Wayfinding Routing Engine Tests", () => {
 
     expect(routeInaccessibleStart).toBeNull();
     expect(routeInaccessibleDest).toBeNull();
+  });
+
+  it("should verify that all edges in MAP_EDGES connect existing nodes in MAP_NODES", () => {
+    MAP_EDGES.forEach(edge => {
+      expect(MAP_NODES[edge.from]).toBeDefined();
+      expect(MAP_NODES[edge.to]).toBeDefined();
+    });
   });
 });

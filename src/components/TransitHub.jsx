@@ -142,7 +142,14 @@ export default function TransitHub({
                       {carbonTotal}g CO₂
                     </span>
                   </div>
-                  <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+                  <div 
+                    role="progressbar"
+                    aria-valuenow={Math.round(percent)}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-label={`Emissions level is ${Math.round(percent)}% of rideshare baseline`}
+                    className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden"
+                  >
                     <div 
                       className={`h-full rounded-full transition-all duration-500 ${
                         opt.carbon === 0 

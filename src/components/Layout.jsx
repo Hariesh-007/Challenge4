@@ -125,7 +125,7 @@ export default function Layout({
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-red-500 to-yellow-500 flex items-center justify-center font-black text-white shadow-lg tracking-wider text-base">
+            <div aria-hidden="true" className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-red-500 to-yellow-500 flex items-center justify-center font-black text-white shadow-lg tracking-wider text-base">
               F
             </div>
             <div>
@@ -300,7 +300,7 @@ export default function Layout({
 
             <div className={`h-8 w-[1px] ${isHC ? 'bg-yellow-400' : 'bg-slate-900'}`}></div>
 
-            <div className="flex items-center space-x-1.5">
+            <div className="flex items-center space-x-1.5" aria-label={`Temperature: ${matchDetails.temp}`}>
               <Thermometer className="h-4.5 w-4.5 text-slate-400" />
               <div className="text-xs font-bold text-slate-350">{matchDetails.temp}</div>
             </div>
