@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 export default function TransitHub({
-  _role,
+  role,
   stadium,
   timePhase,
   language,
@@ -64,7 +64,7 @@ export default function TransitHub({
   };
 
   const currentTip = getPhaseTransitTip();
-  const isHC = accessibility.highContrast;
+  const isHC = accessibility?.highContrast;
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -142,14 +142,7 @@ export default function TransitHub({
                       {carbonTotal}g CO₂
                     </span>
                   </div>
-                  <div 
-                    role="progressbar"
-                    aria-valuenow={Math.round(percent)}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    aria-label={`Emissions level is ${Math.round(percent)}% of rideshare baseline`}
-                    className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden"
-                  >
+                  <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
                     <div 
                       className={`h-full rounded-full transition-all duration-500 ${
                         opt.carbon === 0 

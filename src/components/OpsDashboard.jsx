@@ -54,12 +54,21 @@ export default function OpsDashboard({
 
   const handleInjectIncident = (e) => {
     e.preventDefault();
-    if (!incTitle.trim()) return;
-
-    // Secure input sanitization
-    const cleanTitle = incTitle.replace(/[<>]/g, "").slice(0, 80).trim();
-    const cleanDesc = incDesc.replace(/[<>]/g, "").slice(0, 250).trim();
-
+    if (!incTitle.trim() || !stadium?.id) return;
+ 
+    // Enhanced Input Sanitization & Validation (Security improvement)
+    const sanitizeXSS = (str) => {
+      if (!str) return "";
+      return str
+        .replace(/[<>]/g, "") // strip tags
+        .replace(/javascript:/gi, "") // strip protocol
+        .replace(/onload|onerror|onclick|onmouseover/gi, "") // strip event handlers
+        .trim();
+    };
+ 
+    const cleanTitle = sanitizeXSS(incTitle).slice(0, 80);
+    const cleanDesc = sanitizeXSS(incDesc).slice(0, 250);
+ 
     const newInc = {
       id: `inc-${Date.now()}`,
       type: incType,
@@ -72,16 +81,16 @@ export default function OpsDashboard({
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       assignedTo: "Quick Response Unit"
     };
-
+ 
     setIncidents(prev => [newInc, ...prev]);
-
+ 
     // Push into global alert ticker
     addAlert({
       time: newInc.time,
       title: `${newInc.title} (${newInc.severity.toUpperCase()})`,
       description: newInc.description
     });
-
+ 
     // Reset Form
     setIncTitle("");
     setIncDesc("");
@@ -196,7 +205,7 @@ export default function OpsDashboard({
 
   const aiRecs = getAIRecommendations();
 
-  const isHC = accessibility.highContrast;
+  const isHC = accessibility?.highContrast;
 
   return (
     <div className="space-y-6">
@@ -275,7 +284,7 @@ export default function OpsDashboard({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[180px]">
             {/* Recharts Bar Chart */}
-            <div className="w-full h-full" role="img" aria-label="Bar chart showing gate queue times in minutes">
+            <div className="w-full h-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <XAxis dataKey="name" stroke="#888888" fontSize={9} />
@@ -287,7 +296,7 @@ export default function OpsDashboard({
             </div>
 
             {/* Recharts Pie Chart */}
-            <div className="w-full h-full flex items-center justify-center" role="img" aria-label="Pie chart showing active incidents breakdown by severity">
+            <div className="w-full h-full flex items-center justify-center">
               {pieData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>

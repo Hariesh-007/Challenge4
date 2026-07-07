@@ -1,4 +1,5 @@
 // GenAI Context Engine and Prompt Orchestrator for FIFA World Cup 2026
+import { MAP_NODES, findRoute } from "./routing";
 
 export const STADIUM_FACTS = {
   metlife: {
@@ -207,6 +208,128 @@ export function sanitizeInput(text) {
   return text.replace(/[<>]/g, "").slice(0, 800).trim();
 }
 
+// Dynamic routing query extractor helper (GenAI Navigation Alignment)
+function tryDynamicRouteSearch(prompt, role, stadium, accessibilityNeeds, gates, zones) {
+  const lower = prompt.toLowerCase();
+  
+  // Keywords indicating a route request
+  const routeKeywords = [
+    "route", "way", "go to", "get to", "direction", 
+    "how to get", "navigation", "how to go", "how do i get", 
+    "ir a", "cómo llegar", "cómo voy", "chemin", "aller à", 
+    "comment aller", "itinéraire"
+  ];
+  
+  const isRouteQuery = routeKeywords.some(kw => lower.includes(kw));
+  if (!isRouteQuery) return null;
+
+  let startNodeId = null;
+  let destNodeId = null;
+
+  const nodesList = Object.values(MAP_NODES);
+  // Sort nodes by length descending so longer names match first
+  const sortedNodes = [...nodesList].sort((a, b) => b.name.length - a.name.length);
+
+  // Try to find if a specific start node is mentioned
+  const fromPatterns = [
+    /from\s+([a-zA-Z0-9\s\-]+)/i,
+    /desde\s+([a-zA-Z0-9\s\-]+)/i,
+    /de\s+([a-zA-Z0-9\s\-]+)/i,
+    /depuis\s+([a-zA-Z0-9\s\-]+)/i
+  ];
+
+  let startPhrase = "";
+  for (const regex of fromPatterns) {
+    const match = regex.exec(prompt);
+    if (match && match[1]) {
+      startPhrase = match[1].toLowerCase().trim();
+      break;
+    }
+  }
+
+  if (startPhrase) {
+    for (const node of sortedNodes) {
+      if (
+        node.id === startPhrase ||
+        node.name.toLowerCase().includes(startPhrase) ||
+        startPhrase.includes(node.id) ||
+        startPhrase.includes(node.name.toLowerCase())
+      ) {
+        startNodeId = node.id;
+        break;
+      }
+    }
+  }
+
+  // Try to match destination
+  for (const node of sortedNodes) {
+    const nameLower = node.name.toLowerCase();
+    const idLower = node.id.toLowerCase();
+    
+    const matchesId = lower.includes(idLower);
+    const matchesName = lower.includes(nameLower);
+    const matchesSection = idLower.startsWith("seating-") && (
+      lower.includes(idLower.replace("seating-", "section ")) || 
+      lower.includes(idLower.replace("seating-", "seating "))
+    );
+
+    if (matchesId || matchesName || matchesSection) {
+      if (node.id !== startNodeId) {
+        destNodeId = node.id;
+        break;
+      }
+    }
+  }
+
+  // Fallback start node extraction if not found via "from" pattern
+  if (destNodeId && !startNodeId) {
+    for (const node of sortedNodes) {
+      if (node.id !== destNodeId) {
+        const nameLower = node.name.toLowerCase();
+        const idLower = node.id.toLowerCase();
+        if (lower.includes(idLower) || lower.includes(nameLower)) {
+          startNodeId = node.id;
+          break;
+        }
+      }
+    }
+  }
+
+  // Default start node if not specified
+  if (destNodeId && !startNodeId) {
+    startNodeId = "metro";
+  }
+
+  if (startNodeId && destNodeId && startNodeId !== destNodeId) {
+    let mode = "shortest";
+    if (accessibilityNeeds?.wheelchair) {
+      mode = "accessible";
+    } else if (accessibilityNeeds?.sensory) {
+      mode = "low-crowd";
+    }
+
+    const route = findRoute(startNodeId, destNodeId, mode, gates, zones);
+    if (route) {
+      let response = `🗺️ **FIFA Wayfinding Intelligence Report**\n`;
+      response += `Calculated **${mode.toUpperCase()}** path from **${MAP_NODES[startNodeId].name}** to **${MAP_NODES[destNodeId].name}**:\n\n`;
+      
+      route.steps.forEach((step, idx) => {
+        response += `${idx + 1}. ${step.text}\n`;
+      });
+
+      response += `\n📏 **Metrics**: Total Distance index: ${route.totalDistance} | Est. walking time: ${Math.round(route.totalDistance / 10)} minutes.\n`;
+      
+      if (mode === "accessible") {
+        response += `♿ *Accessible path restrictions applied (stairs avoided).*`;
+      } else if (mode === "low-crowd") {
+        response += `👥 *Congestion-bypass filters active. High queue gates and crowded sections avoided.*`;
+      }
+      return response;
+    }
+  }
+  return null;
+}
+
 /**
  * Core query router for the AI Assistant.
  * Connects to OpenAI if apiKey is set, otherwise utilizes the heuristic local response engine.
@@ -223,11 +346,28 @@ export async function queryAIAssistant({
   apiKey = ""
 }) {
   const cleanPrompt = sanitizeInput(prompt);
+  
+  // Intercept wayfinding requests (GenAI Navigation Enhancement)
+  const routeResponse = tryDynamicRouteSearch(
+    cleanPrompt, 
+    role, 
+    stadium, 
+    accessibilityNeeds, 
+    gates, 
+    stadium?.zones || []
+  );
+  if (routeResponse) {
+    return routeResponse;
+  }
+
   const systemPrompt = buildSystemPrompt(role, stadium, timePhase, accessibilityNeeds, language);
   
   if (apiKey && apiKey.trim() !== "") {
-    // Strip HTTP header injection characters (carriage returns, newlines, control bytes)
-    const cleanApiKey = apiKey.trim().replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+    const cleanApiKey = apiKey.trim();
+    // Validate API Key format to prevent malicious headers (Security enhancement)
+    if (!/^[a-zA-Z0-9\-_]{20,160}$/.test(cleanApiKey)) {
+      throw new Error("Invalid API key format. It should only contain alphanumeric characters, hyphens, and underscores.");
+    }
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",

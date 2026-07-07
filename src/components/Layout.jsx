@@ -67,11 +67,11 @@ export default function Layout({
     let kickoffMsg = "Kickoff in 1h 25m";
     let temp = "24°C";
 
-    if (stadium.id === "azteca") {
+    if (stadium?.id === "azteca") {
       match = "Mexico vs Italy";
       type = "Opening Match";
       temp = "28°C";
-    } else if (stadium.id === "bcplace") {
+    } else if (stadium?.id === "bcplace") {
       match = "Canada vs France";
       type = "Group Stage - Group A";
       temp = "19°C";
@@ -109,13 +109,13 @@ export default function Layout({
     mobileNavItems.push({ id: "command-center", label: t.tabCommandCenter, icon: Shield });
   }
 
-  const isHC = accessibility.highContrast;
+  const isHC = accessibility?.highContrast;
   const contrastClass = isHC 
     ? "bg-black text-yellow-300 border-yellow-400 dark-hc" 
     : "bg-slate-950 text-slate-100 border-slate-900";
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${contrastClass} ${accessibility.largeText ? 'text-lg' : 'text-sm'}`}>
+    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${contrastClass} ${accessibility?.largeText ? 'text-lg' : 'text-sm'}`}>
       
       {/* Top Header */}
       <header className={`sticky top-0 z-40 border-b backdrop-blur-md transition-all duration-300 ${
@@ -125,7 +125,7 @@ export default function Layout({
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div aria-hidden="true" className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-red-500 to-yellow-500 flex items-center justify-center font-black text-white shadow-lg tracking-wider text-base">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-red-500 to-yellow-500 flex items-center justify-center font-black text-white shadow-lg tracking-wider text-base">
               F
             </div>
             <div>
@@ -196,7 +196,7 @@ export default function Layout({
               </label>
               <select
                 id="venue-select"
-                value={stadium.id}
+                value={stadium?.id || ""}
                 onChange={(e) => setStadium(STADIUMS[e.target.value])}
                 aria-label={t.stadiumSelector}
                 className={`py-1 px-2.5 rounded-lg border text-xs font-semibold focus:outline-none focus:ring-1 ${
@@ -279,7 +279,7 @@ export default function Layout({
               <div className="flex items-center space-x-2 text-[9px] uppercase font-black text-fifa-gold tracking-widest">
                 <span>{matchDetails.type}</span>
                 <span>•</span>
-                <span>{stadium.name}</span>
+                <span>{stadium?.name}</span>
               </div>
               <h2 className="text-base sm:text-lg font-black tracking-tight mt-0.5 text-slate-100 uppercase">
                 {matchDetails.match}
@@ -300,7 +300,7 @@ export default function Layout({
 
             <div className={`h-8 w-[1px] ${isHC ? 'bg-yellow-400' : 'bg-slate-900'}`}></div>
 
-            <div className="flex items-center space-x-1.5" aria-label={`Temperature: ${matchDetails.temp}`}>
+            <div className="flex items-center space-x-1.5">
               <Thermometer className="h-4.5 w-4.5 text-slate-400" />
               <div className="text-xs font-bold text-slate-350">{matchDetails.temp}</div>
             </div>

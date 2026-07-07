@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 export default function NavigationMap({
-  _role,
+  role,
   stadium,
   accessibility,
   language,
@@ -33,12 +33,12 @@ export default function NavigationMap({
 
   // Sync mode with accessibility profile
   useEffect(() => {
-    if (accessibility.wheelchairRoute) {
+    if (accessibility?.wheelchairRoute) {
       setRouteMode("accessible");
-    } else if (accessibility.sensoryRoute) {
+    } else if (accessibility?.sensoryRoute) {
       setRouteMode("low-crowd");
     }
-  }, [accessibility.wheelchairRoute, accessibility.sensoryRoute]);
+  }, [accessibility?.wheelchairRoute, accessibility?.sensoryRoute]);
 
   const handleNodeClick = (nodeId) => {
     const node = MAP_NODES[nodeId];
@@ -94,7 +94,7 @@ export default function NavigationMap({
     return "#e2b33c"; // fifa-gold
   };
 
-  const isHC = accessibility.highContrast;
+  const isHC = accessibility?.highContrast;
 
   return (
     <div className="space-y-4">
@@ -159,23 +159,23 @@ export default function NavigationMap({
               </defs>
 
               {/* Grid Guides */}
-              <circle cx="150" cy="125" r="95" aria-hidden="true" className="fill-none stroke-slate-800/20 stroke-[0.5]" />
-              <circle cx="150" cy="125" r="55" aria-hidden="true" className="fill-none stroke-slate-850/40 stroke-1 border-dashed" />
+              <circle cx="150" cy="125" r="95" className="fill-none stroke-slate-800/20 stroke-[0.5]" />
+              <circle cx="150" cy="125" r="55" className="fill-none stroke-slate-850/40 stroke-1 border-dashed" />
               
               {/* Stands Heatmaps */}
-              <path d="M 110,85 A 50,50 0 0,1 190,85 L 210,65 A 75,75 0 0,0 90,65 Z" aria-label="North Stand gate queue load status" className={getHeatmapColor("gate-a")} /> {/* North */}
-              <path d="M 190,85 A 50,50 0 0,1 190,165 L 210,185 A 75,75 0 0,0 210,65 Z" aria-label="East Stand gate queue load status" className={getHeatmapColor("gate-b")} /> {/* East */}
-              <path d="M 190,165 A 50,50 0 0,1 110,165 L 90,185 A 75,75 0 0,0 210,185 Z" aria-label="South Stand gate queue load status" className={getHeatmapColor("gate-c")} /> {/* South */}
-              <path d="M 110,165 A 50,50 0 0,1 110,85 L 90,65 A 75,75 0 0,0 90,185 Z" aria-label="West Stand gate queue load status" className={getHeatmapColor("gate-d")} /> {/* West */}
+              <path d="M 110,85 A 50,50 0 0,1 190,85 L 210,65 A 75,75 0 0,0 90,65 Z" className={getHeatmapColor("gate-a")} /> {/* North */}
+              <path d="M 190,85 A 50,50 0 0,1 190,165 L 210,185 A 75,75 0 0,0 210,65 Z" className={getHeatmapColor("gate-b")} /> {/* East */}
+              <path d="M 190,165 A 50,50 0 0,1 110,165 L 90,185 A 75,75 0 0,0 210,185 Z" className={getHeatmapColor("gate-c")} /> {/* South */}
+              <path d="M 110,165 A 50,50 0 0,1 110,85 L 90,65 A 75,75 0 0,0 90,185 Z" className={getHeatmapColor("gate-d")} /> {/* West */}
 
               {/* Pitch Core */}
-              <rect x="120" y="105" width="60" height="40" rx="6" aria-hidden="true" className="fill-slate-900/60 stroke-slate-800 stroke-[1]" />
+              <rect x="120" y="105" width="60" height="40" rx="6" className="fill-slate-900/60 stroke-slate-800 stroke-[1]" />
               <text x="150" y="128" className="fill-slate-600 font-extrabold text-[7px] uppercase tracking-widest text-center" textAnchor="middle">
                 FIFA 2026
               </text>
 
               {/* Connections (Underlay lines) */}
-              <g aria-hidden="true" className="opacity-10 stroke-slate-400 stroke-[0.5] fill-none">
+              <g className="opacity-10 stroke-slate-400 stroke-[0.5] fill-none">
                 <line x1="150" y1="20" x2="150" y2="70" />
                 <line x1="150" y1="20" x2="280" y2="80" />
                 <line x1="20" y1="150" x2="50" y2="110" />
@@ -208,7 +208,7 @@ export default function NavigationMap({
 
               {/* Glowing Dynamic Route Overlay */}
               {routeResult && routeResult.path && (
-                <g aria-hidden="true">
+                <g>
                   {/* Glowing Underlay line */}
                   <path
                     d={`M ${routeResult.path.map(n => `${n.x},${n.y}`).join(" L ")}`}

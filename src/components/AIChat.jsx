@@ -100,8 +100,8 @@ export default function AIChat({
         stadium,
         timePhase,
         accessibilityNeeds: {
-          wheelchair: accessibility.wheelchairRoute,
-          sensory: accessibility.sensoryRoute
+          wheelchair: accessibility?.wheelchairRoute,
+          sensory: accessibility?.sensoryRoute
         },
         language,
         gates,
@@ -119,7 +119,7 @@ export default function AIChat({
       setMessages(prev => [...prev, aiMsg]);
 
       // TTS Autoplay if enabled in accessibility
-      if (accessibility.ttsActive && synthRef.current) {
+      if (accessibility?.ttsActive && synthRef.current) {
         speakText(responseText);
       }
     } catch (err) {
@@ -203,7 +203,7 @@ export default function AIChat({
 
   const activePrompts = getSmartPrompts();
 
-  const isHC = accessibility.highContrast;
+  const isHC = accessibility?.highContrast;
 
   return (
     <div className={`flex flex-col h-[520px] lg:h-[565px] rounded-2xl border overflow-hidden shadow-xl transition-all duration-300 ${

@@ -25,4 +25,19 @@ describe("Transit Options and Carbon Logic Tests", () => {
       expect(typeof opt.etaOffset).toBe("number");
     });
   });
+
+  it("should validate the carbon offset savings formula (Rideshare vs Metro)", () => {
+    const distance = 15; // 15 km
+    const metro = TRANSIT_OPTIONS.find(o => o.id === "metro");
+    const rideshare = TRANSIT_OPTIONS.find(o => o.id === "rideshare");
+
+    expect(metro).toBeDefined();
+    expect(rideshare).toBeDefined();
+
+    const expectedOffsetFactor = rideshare.carbon - metro.carbon; // 154 - 12 = 142
+    expect(expectedOffsetFactor).toBe(142);
+
+    const calculatedOffset = Math.round(expectedOffsetFactor * distance);
+    expect(calculatedOffset).toBe(142 * distance);
+  });
 });

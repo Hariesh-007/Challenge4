@@ -37,11 +37,14 @@ export default function App() {
 
   // Sync gates state when active stadium changes
   useEffect(() => {
-    setGates(stadium.gates);
+    if (stadium?.gates) {
+      setGates(stadium.gates);
+    }
   }, [stadium]);
 
   // Sync alerts ticker with active stadium open incidents
   useEffect(() => {
+    if (!stadium?.id) return;
     const activeStIncidents = incidents.filter(
       inc => inc.stadium === stadium.id && inc.status === "open"
     );
@@ -79,7 +82,7 @@ export default function App() {
             accessibility={accessibility}
             language={language}
             gates={gates}
-            zones={stadium.zones}
+            zones={stadium?.zones || []}
           />
         );
       case "transit":

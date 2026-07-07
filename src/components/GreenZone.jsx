@@ -78,7 +78,7 @@ export default function GreenZone({
     }, 4000);
   };
 
-  const isHC = accessibility.highContrast;
+  const isHC = accessibility?.highContrast;
   const currentItem = gameItems[currentIndex];
 
   return (
@@ -188,9 +188,9 @@ export default function GreenZone({
           {/* Environmental Metrics */}
           <div className="grid grid-cols-3 gap-2">
             {[
-              { label: "Solar Energy", value: stadium.sustainability.solarGeneration, icon: Sun, color: "text-amber-400" },
-              { label: "Water Saved", value: stadium.sustainability.waterSaved, icon: Droplet, color: "text-blue-400" },
-              { label: "Recycled", value: stadium.sustainability.recyclingRate, icon: TrendingUp, color: "text-emerald-400" }
+              { label: "Solar Energy", value: stadium?.sustainability?.solarGeneration || "0 kWh", icon: Sun, color: "text-amber-400" },
+              { label: "Water Saved", value: stadium?.sustainability?.waterSaved || "0 L", icon: Droplet, color: "text-blue-400" },
+              { label: "Recycled", value: stadium?.sustainability?.recyclingRate || "0%", icon: TrendingUp, color: "text-emerald-400" }
             ].map((metric, i) => {
               const Icon = metric.icon;
               return (
@@ -206,10 +206,10 @@ export default function GreenZone({
           {/* Tips List */}
           <div className="space-y-3">
             <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-              {stadium.name} Green Protocols
+              {stadium?.name || "Stadium"} Green Protocols
             </div>
             <div className="space-y-2">
-              {stadium.sustainability.tips.map((tipText, idx) => (
+              {(stadium?.sustainability?.tips || []).map((tipText, idx) => (
                 <div key={idx} className="flex space-x-2 items-start text-xs text-slate-300 leading-normal">
                   <span className="text-emerald-500 shrink-0 mt-0.5">•</span>
                   <span>{tipText}</span>
