@@ -71,10 +71,24 @@ export const LOCAL_RESPONSES = {
 /**
  * Builds the system instructions for the AI model depending on user context.
  */
-export function buildSystemPrompt(role, stadium, phase, accessibilityNeeds, language) {
+export function buildSystemPrompt(role, stadium, phase, accessibilityNeeds, language, gates = [], incidents = [], weather = null) {
   const stadiumName = stadium ? stadium.name : "FIFA World Cup 2026 Stadium";
   const cityName = stadium ? stadium.city : "Host City";
   
+  // Format live gates status
+  const gatesStatusStr = (gates || []).map(g => `- ${g.name}: ${g.queueTime} mins wait (${g.status}, load: ${g.load}%, accessible: ${g.accessible ? 'YES' : 'NO'})`).join("\n");
+  
+  // Format active incidents
+  const activeIncs = (incidents || []).filter(i => i.status !== "resolved");
+  const incidentsStr = activeIncs.length > 0 
+    ? activeIncs.map(i => `- [${i.severity.toUpperCase()}] ${i.title} at ${i.zone}: ${i.description}`).join("\n")
+    : "No active incidents reported.";
+    
+  // Format weather info
+  const weatherStr = weather 
+    ? `${weather.temp}°C, Humidity: ${weather.humidity}%, Condition: ${weather.condition}`
+    : "Not available (standard temperature of stadium active)";
+
   let roleInstruction = "";
   switch (role) {
     case "fan":
@@ -113,11 +127,17 @@ Context Details:
 - **Match Phase**: ${phase}
 - **Language**: ${language}
 - **Accessibility Profile**: Wheelchair routing active? ${accessibilityNeeds.wheelchair ? 'YES' : 'NO'}, Sensory considerations? ${accessibilityNeeds.sensory ? 'YES' : 'NO'}
+- **Live Stadium Weather**: ${weatherStr}
+- **Live Gates & Queue Pressures**:
+${gatesStatusStr}
+- **Active Incidents**:
+${incidentsStr}
 
 Guardrails:
 1. Always respond in the selected language: ${language.toUpperCase()}.
 2. Never invent safety-critical evacuation gates or medical instructions. If you do not know a location or layout detail, instruct the user to "locate the nearest green-vested staff member" or "report to the closest medical beacon".
-3. Do not suggest aggressive crowd dispersion tactics. Suggest flow redirections or delayed egress.`;
+3. Do not suggest aggressive crowd dispersion tactics. Suggest flow redirections or delayed egress.
+4. Strictly answer questions using the provided Context Details and stadium operations data only. If the user asks about unrelated topics (e.g., writing general programming code, cooking recipes, solving mathematical problems, or off-topic general knowledge), you must politely decline to answer, stating that you are the FIFA Matchday Assistant and can only answer questions related to the match, stadium, transit, and operations. Do not help with general homework or off-topic tasks.`;
 
   return prompt;
 }
@@ -343,7 +363,8 @@ export async function queryAIAssistant({
   language,
   gates = [],
   incidents = [],
-  apiKey = ""
+  apiKey = "",
+  weather = null
 }) {
   const cleanPrompt = sanitizeInput(prompt);
   
@@ -360,7 +381,7 @@ export async function queryAIAssistant({
     return routeResponse;
   }
 
-  const systemPrompt = buildSystemPrompt(role, stadium, timePhase, accessibilityNeeds, language);
+  const systemPrompt = buildSystemPrompt(role, stadium, timePhase, accessibilityNeeds, language, gates, incidents, weather);
   
   if (apiKey && apiKey.trim() !== "") {
     const cleanApiKey = apiKey.trim();

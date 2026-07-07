@@ -31,6 +31,7 @@ export default function Layout({
   accessibility,
   alerts,
   chatComponent,
+  weather,
   children
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -302,7 +303,9 @@ export default function Layout({
 
             <div className="flex items-center space-x-1.5">
               <Thermometer className="h-4.5 w-4.5 text-slate-400" />
-              <div className="text-xs font-bold text-slate-350">{matchDetails.temp}</div>
+              <div className="text-xs font-bold text-slate-350">
+                {weather ? `${weather.temp}°C (${weather.condition})` : matchDetails.temp}
+              </div>
             </div>
           </div>
         </div>

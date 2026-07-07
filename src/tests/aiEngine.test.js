@@ -143,4 +143,26 @@ describe("GenAI Context Engine and Sanitization Tests", () => {
     expect(response).toContain("Seating Section 100-110");
     expect(response).toContain("Metrics");
   });
+
+  it("should compile system prompt context details including weather, gates status, and incidents", () => {
+    const stadium = { name: "MetLife Stadium", city: "New York / New Jersey" };
+    const access = { wheelchair: true, sensory: false };
+    const gates = [
+      { id: "gate-a", name: "Gate A", status: "normal", queueTime: 5, load: 20, accessible: true }
+    ];
+    const incidents = [
+      { id: "inc-1", severity: "high", title: "Gate J Jammed", zone: "West Concourse", description: "Hardware lock", status: "open" }
+    ];
+    const weather = { temp: 22, humidity: 48, condition: "Partly Cloudy" };
+
+    const prompt = buildSystemPrompt("fan", stadium, "pre-match", access, "en", gates, incidents, weather);
+
+    expect(prompt).toContain("Live Stadium Weather");
+    expect(prompt).toContain("22°C, Humidity: 48%, Condition: Partly Cloudy");
+    expect(prompt).toContain("Live Gates & Queue Pressures");
+    expect(prompt).toContain("Gate A: 5 mins wait (normal, load: 20%, accessible: YES)");
+    expect(prompt).toContain("Active Incidents");
+    expect(prompt).toContain("[HIGH] Gate J Jammed at West Concourse: Hardware lock");
+    expect(prompt).toContain("Strictly answer questions using the provided Context Details");
+  });
 });

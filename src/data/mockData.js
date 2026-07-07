@@ -7,6 +7,8 @@ export const STADIUMS = {
     city: "New York / New Jersey",
     country: "USA",
     capacity: 82500,
+    lat: 40.8135,
+    lon: -74.0743,
     gates: [
       { id: "gate-a", name: "Gate A (Main Plaza)", status: "normal", queueTime: 8, load: 35, accessible: true },
       { id: "gate-b", name: "Gate B (Verizon)", status: "congested", queueTime: 18, load: 70, accessible: true },
@@ -43,6 +45,8 @@ export const STADIUMS = {
     city: "Mexico City",
     country: "Mexico",
     capacity: 87523,
+    lat: 19.3029,
+    lon: -99.1505,
     gates: [
       { id: "gate-a", name: "Acceso Principal A", status: "normal", queueTime: 10, load: 45, accessible: true },
       { id: "gate-b", name: "Acceso Lateral B", status: "normal", queueTime: 12, load: 50, accessible: false },
@@ -79,6 +83,8 @@ export const STADIUMS = {
     city: "Vancouver",
     country: "Canada",
     capacity: 54500,
+    lat: 49.2768,
+    lon: -123.1120,
     gates: [
       { id: "gate-a", name: "Gate A (Terry Fox Plaza)", status: "normal", queueTime: 5, load: 22, accessible: true },
       { id: "gate-b", name: "Gate B (Pacific Blvd)", status: "normal", queueTime: 7, load: 30, accessible: true },

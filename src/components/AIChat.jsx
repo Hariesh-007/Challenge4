@@ -19,7 +19,8 @@ export default function AIChat({
   accessibility,
   language,
   gates,
-  incidents
+  incidents,
+  weather
 }) {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   
@@ -106,7 +107,8 @@ export default function AIChat({
         language,
         gates,
         incidents,
-        apiKey
+        apiKey,
+        weather
       });
 
       const aiMsg = {

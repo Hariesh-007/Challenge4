@@ -25,6 +25,13 @@ export default function App() {
     sensoryRoute: false
   });
 
+  // Weather state (populated by Open-Meteo real-time REST API)
+  const [weather, setWeather] = useState({
+    temp: 24,
+    humidity: 50,
+    condition: "Clear Sky"
+  });
+
   // Gates live state (modulated by simulation)
   const [gates, setGates] = useState(stadium.gates);
   
@@ -40,6 +47,45 @@ export default function App() {
     if (stadium?.gates) {
       setGates(stadium.gates);
     }
+  }, [stadium]);
+
+  // Fetch real-time weather data from Open-Meteo REST API
+  useEffect(() => {
+    async function fetchWeather() {
+      if (!stadium || typeof stadium.lat !== "number" || typeof stadium.lon !== "number") return;
+      try {
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${stadium.lat}&longitude=${stadium.lon}&current=temperature_2m,relative_humidity_2m,weather_code`);
+        if (res.ok) {
+          const data = await res.json();
+          const weatherMap = {
+            0: "Clear Sky",
+            1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
+            45: "Foggy", 48: "Depositing Rime Fog",
+            51: "Light Drizzle", 53: "Moderate Drizzle", 55: "Dense Drizzle",
+            61: "Slight Rain", 63: "Moderate Rain", 65: "Heavy Rain",
+            71: "Slight Snowfall", 73: "Moderate Snowfall", 75: "Heavy Snowfall",
+            80: "Slight Rain Showers", 81: "Moderate Rain Showers", 82: "Violent Rain Showers",
+            95: "Thunderstorm"
+          };
+          const code = data.current?.weather_code;
+          const condition = weatherMap[code] || "Clear Sky";
+          
+          setWeather({
+            temp: Math.round(data.current?.temperature_2m ?? (stadium.id === "azteca" ? 28 : stadium.id === "bcplace" ? 19 : 24)),
+            humidity: data.current?.relative_humidity_2m ?? 50,
+            condition
+          });
+        }
+      } catch (e) {
+        console.warn("Failed to fetch real-time weather from Open-Meteo, falling back to stadium defaults:", e);
+        setWeather({
+          temp: stadium.id === "azteca" ? 28 : stadium.id === "bcplace" ? 19 : 24,
+          humidity: 50,
+          condition: "Clear Sky"
+        });
+      }
+    }
+    fetchWeather();
   }, [stadium]);
 
   // Sync alerts ticker with active stadium open incidents
@@ -69,6 +115,7 @@ export default function App() {
       language={language}
       gates={gates}
       incidents={incidents}
+      weather={weather}
     />
   );
 
@@ -138,6 +185,7 @@ export default function App() {
       setAccessibility={setAccessibility}
       alerts={alerts}
       chatComponent={chatComponent}
+      weather={weather}
     >
       <div className="space-y-5">
         
