@@ -42,6 +42,7 @@ export default function OpsDashboard({
   const [incSeverity, setIncSeverity] = useState("medium");
   const [incZone, setIncZone] = useState("North Stand");
   const [incDesc, setIncDesc] = useState("");
+  const [toast, setToast] = useState(null);
 
   const handleResolveIncident = (incId) => {
     setIncidents(prev => prev.map(inc => {
@@ -125,11 +126,15 @@ export default function OpsDashboard({
       }
       return g;
     }));
-    alert(language === "es" 
+    const msg = language === "es" 
       ? `Despliegue activado. Personal de apoyo movilizado.` 
       : language === "fr"
       ? `Redéploiement activé. Bénévoles redirigés.`
-      : `Staff redeployed to assist queue management at Gate.`);
+      : `Staff redeployed to assist queue management at Gate.`;
+    setToast(msg);
+    setTimeout(() => {
+      setToast(null);
+    }, 4000);
   };
 
   // Compile stats for charts
@@ -209,6 +214,15 @@ export default function OpsDashboard({
 
   return (
     <div className="space-y-6">
+      {/* Toast Alert Banner */}
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 p-4 rounded-xl border shadow-2xl flex items-center space-x-2 animate-fade-in ${
+          isHC ? "bg-black border-yellow-400 text-yellow-300" : "bg-slate-900 border-emerald-500 text-emerald-400"
+        }`}>
+          <Check className="h-5 w-5 text-emerald-400" />
+          <span className="text-xs font-bold">{toast}</span>
+        </div>
+      )}
       
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
