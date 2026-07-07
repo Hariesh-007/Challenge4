@@ -63,6 +63,8 @@ describe("GenAI Context Engine and Sanitization Tests", () => {
       language: "en"
     });
     expect(responseVolunteer).toContain("Volunteer Protocol");
+    expect(responseVolunteer).toContain("Zone Supervisor");
+    expect(responseVolunteer).toContain("Smile and assist!");
   });
 
   it("should output dynamic state-aware details (incidents, queues) for organizers and staff", async () => {
@@ -85,8 +87,8 @@ describe("GenAI Context Engine and Sanitization Tests", () => {
     });
 
     expect(organizerRes).toContain("Incident Commander Summary");
-    expect(organizerRes).toContain("95");
-    expect(organizerRes).toContain("1");
+    expect(organizerRes).toContain("capacity load is 95%");
+    expect(organizerRes).toContain("1 open incidents");
 
     const staffRes = await queryAIAssistant({
       prompt: "show safety alert",
@@ -100,5 +102,7 @@ describe("GenAI Context Engine and Sanitization Tests", () => {
     });
 
     expect(staffRes).toContain("Staff Action Directive");
+    expect(staffRes).toContain("exceeded safety margins");
+    expect(staffRes).toContain("redirect arrivals");
   });
 });

@@ -226,7 +226,8 @@ export async function queryAIAssistant({
   const systemPrompt = buildSystemPrompt(role, stadium, timePhase, accessibilityNeeds, language);
   
   if (apiKey && apiKey.trim() !== "") {
-    const cleanApiKey = apiKey.trim();
+    // Strip HTTP header injection characters (carriage returns, newlines, control bytes)
+    const cleanApiKey = apiKey.trim().replace(/[\x00-\x1F\x7F-\x9F]/g, "");
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
