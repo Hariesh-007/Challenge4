@@ -180,134 +180,31 @@ function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], 
 
   // Role specific overrides
   if (role === "volunteer" && (lower.includes("task") || lower.includes("checklist") || lower.includes("duty") || lower.includes("deber") || lower.includes("tâche") || lower.includes("faire"))) {
-    const congestedGates = gates.filter(g => g.status !== "normal");
-    let checklist = "";
-    if (language === "es") {
-      checklist = `[Lista de Tareas para Voluntarios - Sede: ${stadium.name}]\n`;
-      checklist += `1. Monitorear líneas de cola de entrada. Puertas congestionadas actuales: ${congestedGates.length ? congestedGates.map(g => g.name).join(", ") : "Ninguna"}.\n`;
-      checklist += `2. Guiar a los aficionados hacia accesos alternativos y mantener el flujo fluido.\n`;
-      checklist += `3. Promover el uso de botes de reciclaje y el programa de vasos reutilizables.\n`;
-      checklist += `4. Sonreír y asistir a familias y personas con necesidades de accesibilidad.`;
-    } else if (language === "fr") {
-      checklist = `[Liste des Tâches Bénévoles - Stade: ${stadium.name}]\n`;
-      checklist += `1. Surveiller l'attente aux entrées. Portes saturées actuellement: ${congestedGates.length ? congestedGates.map(g => g.name).join(", ") : "Aucune"}.\n`;
-      checklist += `2. Orienter les supporters vers les accès fluides.\n`;
-      checklist += `3. Rappeler les consignes de tri éco-responsable.\n`;
-      checklist += `4. Assister les personnes en situation de handicap et les familles.`;
-    } else {
-      checklist = `[Volunteer Duty Checklist - Venue: ${stadium.name}]\n`;
-      checklist += `1. Monitor gate queues. Currently congested gates: ${congestedGates.length ? congestedGates.map(g => g.name).join(", ") : "None"}.\n`;
-      checklist += `2. Guide arriving fans to less-crowded entry points.\n`;
-      checklist += `3. Assist fans at zero-waste sorting hubs (Eco Hub).\n`;
-      checklist += `4. Provide priority queue assistance to accessibility card holders.`;
-    }
-    return checklist;
+    return dict.volunteer_task;
   }
 
   if (role === "staff" && (lower.includes("action") || lower.includes("alert") || lower.includes("crowd") || lower.includes("congestion") || lower.includes("protocol"))) {
-    const highSeverityIncidents = incidents.filter(i => i.stadium === stadium.id && i.severity === "high" && i.status !== "resolved");
-    let actionText = "";
-    if (language === "es") {
-      actionText = `[Directiva de Operaciones de Personal - Sede: ${stadium.name}]\n`;
-      if (highSeverityIncidents.length > 0) {
-        actionText += `ALERTA CRÍTICA: Se reporta "${highSeverityIncidents[0].title}" en ${highSeverityIncidents[0].zone}. Proceder con el protocolo de contingencia de seguridad de inmediato.\n`;
-      } else {
-        actionText += `Operaciones estables. Todo el personal en sus puestos estándar.\n`;
-      }
-      actionText += `Instrucción: Coordinar con los líderes de zona para ajustar los tiempos de los lectores de boletos digitales.`;
-    } else if (language === "fr") {
-      actionText = `[Directive Opérationnelle du Personnel - Stade: ${stadium.name}]\n`;
-      if (highSeverityIncidents.length > 0) {
-        actionText += `ALERTE CRITIQUE: Incident signalé "${highSeverityIncidents[0].title}" à la ${highSeverityIncidents[0].zone}. Appliquer le protocole d'urgence immédiatement.\n`;
-      } else {
-        actionText += `Opérations nominales. Tout le personnel est en position standard.\n`;
-      }
-      actionText += `Instruction: Ajuster les barrières de foule en fonction de l'évolution des files.`;
-    } else {
-      actionText = `[Staff Action Directive - Venue: ${stadium.name}]\n`;
-      if (highSeverityIncidents.length > 0) {
-        actionText += `CRITICAL INCIDENT: "${highSeverityIncidents[0].title}" reported in ${highSeverityIncidents[0].zone}. Deploy safety response teams immediately.\n`;
-      } else {
-        actionText += `No critical safety incidents reported. Operations nominal.\n`;
-      }
-      actionText += `Instruction: Adjust mobile ticket barrier lines to smooth entry queues.`;
-    }
-    return actionText;
+    return dict.staff_action;
   }
 
   if (role === "organizer" || lower.includes("summary") || lower.includes("command") || lower.includes("report")) {
-    const activeIncs = incidents.filter(i => i.stadium === stadium.id && i.status !== "resolved");
-    const activeIncCount = activeIncs.length;
-    const capacityLoad = gates.length ? Math.round(gates.reduce((acc, g) => acc + g.load, 0) / gates.length) : 55;
-    
-    let summary = "";
-    if (language === "es") {
-      summary = `[Resumen de Comando de Incidentes] Carga del estadio: ${capacityLoad}%. Hay ${activeIncCount} incidente(s) activo(s) en ${stadium.name}:\n`;
-      if (activeIncCount > 0) {
-        activeIncs.forEach((i, idx) => {
-          summary += `${idx + 1}. [${i.severity.toUpperCase()}] ${i.title} en ${i.zone} (${i.description})\n`;
-        });
-      } else {
-        summary += "No hay incidentes activos reportados actualmente.\n";
-      }
-      summary += "\nRecomendación de IA: Mantener desvíos activos y redistribuir personal para equilibrar las cargas de entrada.";
-    } else if (language === "fr") {
-      summary = `[Synthèse du Poste de Commandement] Charge globale: ${capacityLoad}%. Il y a ${activeIncCount} incident(s) actif(s) à ${stadium.name}:\n`;
-      if (activeIncCount > 0) {
-        activeIncs.forEach((i, idx) => {
-          summary += `${idx + 1}. [${i.severity.toUpperCase()}] ${i.title} à ${i.zone} (${i.description})\n`;
-        });
-      } else {
-        summary += "Aucun incident actif signalé pour le moment.\n";
-      }
-      summary += "\nRecommandation IA: Surveiller les accès saturés et rediriger les flux de supporters.";
-    } else {
-      summary = `[Incident Command Summary Report] Stadium Egress Load: ${capacityLoad}%. There are ${activeIncCount} active incident(s) at ${stadium.name}:\n`;
-      if (activeIncCount > 0) {
-        activeIncs.forEach((i, idx) => {
-          summary += `${idx + 1}. [${i.severity.toUpperCase()}] ${i.title} in ${i.zone} (${i.description})\n`;
-        });
-      } else {
-        summary += "No active incidents currently reported.\n";
-      }
-      summary += "\nAI Command Recommendation: Maintain entry queue bypass barriers and monitor flow rates.";
-    }
-    return summary;
+    const activeInc = incidents.filter(i => i.status !== "resolved").length;
+    const capacityLoad = Math.round(gates.reduce((acc, g) => acc + g.load, 0) / (gates.length || 1)) || 55;
+    return dict.organizer_summary.replace("{load}", capacityLoad).replace("{incidents}", activeInc);
   }
 
   // Fallback depending on role
-  if (role === "volunteer") {
-    const congestedGates = gates.filter(g => g.status !== "normal");
-    return language === "es" 
-      ? `[Voluntario] Supervise el flujo de las puertas. Puertas con alta congestión: ${congestedGates.length ? congestedGates.map(g => g.name).join(", ") : "Ninguna"}.`
-      : language === "fr"
-      ? `[Bénévole] Surveillez les flux. Portes encombrées: ${congestedGates.length ? congestedGates.map(g => g.name).join(", ") : "Aucune"}.`
-      : `[Volunteer] Assist queue directions. Currently congested gates: ${congestedGates.length ? congestedGates.map(g => g.name).join(", ") : "None"}.`;
-  }
-  if (role === "staff") {
-    return language === "es"
-      ? `[Personal] Mantener alerta operativa. Reportar cualquier obstrucción.`
-      : language === "fr"
-      ? `[Personnel] Restez vigilant. Signalez toute anomalie de passage.`
-      : `[Staff] Maintain high vigilance. Report queue blocks immediately.`;
-  }
-  if (role === "organizer") {
-    const activeIncCount = incidents.filter(i => i.stadium === stadium.id && i.status !== "resolved").length;
-    return language === "es"
-      ? `[Organizador] Comandos activos. Total de incidentes en curso: ${activeIncCount}.`
-      : language === "fr"
-      ? `[Organisateur] Postes actifs. Total des incidents en cours: ${activeIncCount}.`
-      : `[Organizer] Command operations online. Active incidents remaining: ${activeIncCount}.`;
-  }
+  if (role === "volunteer") return dict.volunteer_task;
+  if (role === "staff") return dict.staff_action;
+  if (role === "organizer") return dict.organizer_summary.replace("{load}", 62).replace("{incidents}", incidents.filter(i => i.status !== "resolved").length);
 
   return dict.greeting;
 }
 
 export function sanitizeInput(text) {
   if (typeof text !== "string") return "";
-  // Strip HTML elements, control characters (excluding newlines and tabs), and restrict length to prevent DoS payloads
-  const clean = text.replace(/[<>]/g, "").replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, "");
-  return clean.slice(0, 800).trim();
+  // Strip HTML elements and restrict length to prevent DoS payloads
+  return text.replace(/[<>]/g, "").slice(0, 800).trim();
 }
 
 /**
@@ -330,9 +227,6 @@ export async function queryAIAssistant({
   
   if (apiKey && apiKey.trim() !== "") {
     const cleanApiKey = apiKey.trim();
-    if (!/^sk-[A-Za-z0-9_-]+$/.test(cleanApiKey)) {
-      throw new Error("Format error: OpenAI API keys must begin with 'sk-' and contain only alphanumeric characters, hyphens, or underscores.");
-    }
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",

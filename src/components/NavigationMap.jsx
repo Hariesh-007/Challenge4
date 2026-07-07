@@ -236,20 +236,7 @@ export default function NavigationMap({
                 const isDest = node.id === destNode;
                 
                 return (
-                  <g 
-                    key={node.id} 
-                    className="cursor-pointer focus:outline-none focus:ring-1 focus:ring-fifa-gold rounded-full"
-                    onClick={() => handleNodeClick(node.id)}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`Select ${node.name} node`}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleNodeClick(node.id);
-                      }
-                    }}
-                  >
+                  <g key={node.id}>
                     {/* Radar Pulse for starts & destinations */}
                     {isStart && (
                       <circle
@@ -273,7 +260,17 @@ export default function NavigationMap({
                       cx={node.x}
                       cy={node.y}
                       r={isStart || isDest ? 4.5 : 3}
-                      className={`transition-all duration-200 hover:scale-150 ${getMapNodeColor(node)}`}
+                      className={`cursor-pointer focus:outline-none focus:ring-1 focus:ring-fifa-gold rounded-full transition-all duration-200 hover:scale-150 ${getMapNodeColor(node)}`}
+                      onClick={() => handleNodeClick(node.id)}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Select ${node.name} node`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleNodeClick(node.id);
+                        }
+                      }}
                     />
                     <title>{node.name}</title>
                   </g>
