@@ -334,13 +334,17 @@ export default function Layout({
         
         {/* Navigation Sidebar (Desktop) */}
         <aside className="hidden lg:block w-52 shrink-0">
-          <nav className="flex flex-col space-y-1">
+          <nav role="tablist" aria-label="Stadium Sections" className="flex flex-col space-y-1">
             {desktopNavItems.map(item => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={`panel-${item.id}`}
+                  id={`tab-${item.id}`}
                   onClick={() => setActiveTab(item.id)}
                   aria-label={`Navigate to ${item.label}`}
                   className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl border text-left font-bold text-[10px] uppercase tracking-wider transition-all duration-200 ${
@@ -372,28 +376,34 @@ export default function Layout({
               <X className="h-6 w-6 text-white" />
             </button>
             <h2 className="text-slate-400 uppercase tracking-widest text-xs font-bold mb-2">Navigation</h2>
-            {mobileNavItems.map(item => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  aria-label={`Navigate to ${item.label}`}
-                  className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl border text-left font-bold text-sm uppercase tracking-wide transition-all ${
-                    isActive 
-                      ? "bg-fifa-blue border-blue-600 text-white" 
-                      : "bg-slate-900 border-slate-900 text-slate-350"
-                  }`}
-                >
-                  <Icon className="h-5 w-5 text-slate-400" />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
+            <div role="tablist" aria-label="Mobile Navigation" className="flex flex-col space-y-3">
+              {mobileNavItems.map(item => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-controls={`panel-${item.id}`}
+                    id={`mob-tab-${item.id}`}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    aria-label={`Navigate to ${item.label}`}
+                    className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl border text-left font-bold text-sm uppercase tracking-wide transition-all ${
+                      isActive 
+                        ? "bg-fifa-blue border-blue-600 text-white" 
+                        : "bg-slate-900 border-slate-900 text-slate-350"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5 text-slate-400" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 

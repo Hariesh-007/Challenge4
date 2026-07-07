@@ -139,7 +139,12 @@ export default function App() {
       <div className="space-y-5">
         
         {/* Active Tab Screen */}
-        <section className="transition-all duration-300">
+        <section 
+          id={`panel-${activeTab}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${activeTab}`}
+          className="transition-all duration-300"
+        >
           {renderActiveTabContent()}
         </section>
 

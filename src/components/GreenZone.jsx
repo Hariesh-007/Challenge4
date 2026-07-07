@@ -113,6 +113,7 @@ export default function GreenZone({
               )}
               <button
                 onClick={resetGame}
+                aria-label={t.playAgain}
                 className="mt-3 flex items-center space-x-1 px-4 py-2 bg-fifa-blue hover:bg-blue-700 text-white text-xs font-bold uppercase rounded-lg mx-auto"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
@@ -146,6 +147,7 @@ export default function GreenZone({
                       <button
                         key={bin.cat}
                         onClick={() => handleSort(bin.cat)}
+                        aria-label={`Sort item ${currentItem?.item} into ${bin.label}`}
                         className={`py-2 text-[10px] font-bold uppercase rounded-lg text-white transition-all ${bin.color}`}
                       >
                         {bin.label}

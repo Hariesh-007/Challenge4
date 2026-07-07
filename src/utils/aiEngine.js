@@ -1,6 +1,6 @@
 // GenAI Context Engine and Prompt Orchestrator for FIFA World Cup 2026
 
-const STADIUM_FACTS = {
+export const STADIUM_FACTS = {
   metlife: {
     metro: "Meadowlands Rail Station connects directly to Secaucus Junction.",
     accessibility: "ADA seating is located in Sections 117-124 and 224-230. Elevators are next to Gates A, B, and D.",
@@ -22,7 +22,7 @@ const STADIUM_FACTS = {
 };
 
 // Heuristic Multi-lingual responses if no API key is provided
-const LOCAL_RESPONSES = {
+export const LOCAL_RESPONSES = {
   en: {
     greeting: "Hello! I am your FIFA Matchday Assistant. Ask me anything about stadiums, routes, accessibility, or operations.",
     gateC_crowded: "Alert: Gate C is currently overcrowded (Wait time: 32+ mins). For a smoother entry, please route to Gate D or Gate A where wait times are under 10 minutes.",
@@ -305,8 +305,9 @@ function getLocalHeuristicResponse(prompt, role, stadium, language, gates = [], 
 
 export function sanitizeInput(text) {
   if (typeof text !== "string") return "";
-  // Strip HTML elements and restrict length to prevent DoS payloads
-  return text.replace(/[<>]/g, "").slice(0, 800).trim();
+  // Strip HTML elements, control characters (excluding newlines and tabs), and restrict length to prevent DoS payloads
+  const clean = text.replace(/[<>]/g, "").replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, "");
+  return clean.slice(0, 800).trim();
 }
 
 /**
@@ -328,12 +329,16 @@ export async function queryAIAssistant({
   const systemPrompt = buildSystemPrompt(role, stadium, timePhase, accessibilityNeeds, language);
   
   if (apiKey && apiKey.trim() !== "") {
+    const cleanApiKey = apiKey.trim();
+    if (!/^sk-[A-Za-z0-9_-]+$/.test(cleanApiKey)) {
+      throw new Error("Format error: OpenAI API keys must begin with 'sk-' and contain only alphanumeric characters, hyphens, or underscores.");
+    }
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          "Authorization": `Bearer ${cleanApiKey}`
         },
         body: JSON.stringify({
           model: "gpt-4o-mini", // Cost-effective, fast and safe

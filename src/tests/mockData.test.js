@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { STADIUMS, TRANSIT_OPTIONS, SUSTAINABILITY_GAME, INITIAL_INCIDENTS } from "../data/mockData";
+import { STADIUM_FACTS } from "../utils/aiEngine";
 
 describe("Mock Data Schema Integrity Tests", () => {
   it("should verify that all stadiums have a valid definition", () => {
@@ -66,6 +67,17 @@ describe("Mock Data Schema Integrity Tests", () => {
       expect(inc.severity).toBeDefined();
       expect(inc.title).toBeDefined();
       expect(inc.zone).toBeDefined();
+    });
+  });
+
+  it("should ensure all stadium definitions have corresponding facts configurations in the context database", () => {
+    const keys = Object.keys(STADIUMS);
+    keys.forEach(k => {
+      expect(STADIUM_FACTS[k]).toBeDefined();
+      expect(STADIUM_FACTS[k].metro).toBeDefined();
+      expect(STADIUM_FACTS[k].accessibility).toBeDefined();
+      expect(STADIUM_FACTS[k].sensory).toBeDefined();
+      expect(STADIUM_FACTS[k].eco).toBeDefined();
     });
   });
 });

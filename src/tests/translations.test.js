@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { TRANSLATIONS } from "../data/translation";
+import { LOCAL_RESPONSES } from "../utils/aiEngine";
 
 describe("Multilingual Translation Dictionary Tests", () => {
   it("should contain matching translation keys for English, Spanish, and French", () => {
@@ -28,5 +29,17 @@ describe("Multilingual Translation Dictionary Tests", () => {
     expect(TRANSLATIONS.en.appName).toContain("FIFA");
     expect(TRANSLATIONS.es.appName).toContain("Asistente");
     expect(TRANSLATIONS.fr.appName).toContain("Assistant");
+  });
+
+  it("should ensure LOCAL_RESPONSES contains matching parameter placeholders in all languages", () => {
+    const checkPlaceholders = (key, placeholder) => {
+      expect(LOCAL_RESPONSES.en[key]).toContain(placeholder);
+      expect(LOCAL_RESPONSES.es[key]).toContain(placeholder);
+      expect(LOCAL_RESPONSES.fr[key]).toContain(placeholder);
+    };
+
+    checkPlaceholders("gate_general", "{avgQueue}");
+    checkPlaceholders("organizer_summary", "{load}");
+    checkPlaceholders("organizer_summary", "{incidents}");
   });
 });

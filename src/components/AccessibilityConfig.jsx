@@ -27,12 +27,14 @@ export default function AccessibilityConfig({
   };
 
   // Custom Toggle switch renderer
-  const ToggleSwitch = ({ active, onClick, label }) => (
+  const ToggleSwitch = ({ active, onClick, id, labelledBy, describedBy }) => (
     <button 
+      id={id}
       onClick={onClick} 
       role="switch"
       aria-checked={active}
-      aria-label={label}
+      aria-labelledby={labelledBy}
+      aria-describedby={describedBy}
       className="focus:outline-none focus:ring-1 focus:ring-fifa-gold rounded transition-colors"
     >
       {active ? (
@@ -76,14 +78,16 @@ export default function AccessibilityConfig({
                   <Icon className="h-4.5 w-4.5 text-fifa-gold" />
                 </span>
                 <div>
-                  <h4 className="font-bold text-xs text-slate-200">{item.label}</h4>
-                  <p className="text-[10px] text-slate-400 mt-0.5 leading-normal">{item.desc}</p>
+                  <h4 id={`heading-${item.key}`} className="font-bold text-xs text-slate-200">{item.label}</h4>
+                  <p id={`desc-${item.key}`} className="text-[10px] text-slate-400 mt-0.5 leading-normal">{item.desc}</p>
                 </div>
               </div>
               <ToggleSwitch 
                 active={accessibility[item.key]} 
                 onClick={() => toggleSetting(item.key)} 
-                label={item.label}
+                id={`switch-${item.key}`}
+                labelledBy={`heading-${item.key}`}
+                describedBy={`desc-${item.key}`}
               />
             </div>
           );
