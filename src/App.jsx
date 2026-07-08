@@ -138,6 +138,7 @@ export default function App() {
             timePhase={timePhase}
             language={language}
             accessibility={accessibility}
+            weather={weather}
           />
         );
       case "sustainability":

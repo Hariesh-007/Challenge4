@@ -16,7 +16,8 @@ export default function TransitHub({
   stadium,
   timePhase,
   language,
-  accessibility
+  accessibility,
+  weather
 }) {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const [distance, setDistance] = useState(15); // standard mock distance in km
@@ -29,6 +30,48 @@ export default function TransitHub({
       default: return Footprints;
     }
   };
+
+  // Dynamic AI Commute Recommendation based on context (weather, distance, timePhase)
+  const getAISmartTransitRecommendation = () => {
+    let modeName = "";
+    let reason = "";
+
+    if (distance <= 3) {
+      if (weather && (weather.condition.toLowerCase().includes("rain") || weather.condition.toLowerCase().includes("snow") || weather.condition.toLowerCase().includes("thunderstorm"))) {
+        modeName = language === "es" ? "Lanzaderas Rápidas" : language === "fr" ? "Navettes Rapides" : "Rapid Shuttles";
+        reason = language === "es" 
+          ? "Debido a la lluvia/tormenta, recomendamos el servicio de enlace gratuito en lugar de caminar."
+          : language === "fr"
+          ? "En raison de la pluie/orage, nous recommandons la navette gratuite plutôt que la marche."
+          : "Due to ongoing precipitation, we recommend the free rapid shuttle loops over walking.";
+      } else {
+        modeName = language === "es" ? "Caminar / Peatonal" : language === "fr" ? "Marche / Piéton" : "Pedestrian Egress / Walk";
+        reason = language === "es"
+          ? "Para distancias cortas (<3 km), caminar reduce las emisiones a cero y evita las filas de tránsito."
+          : language === "fr"
+          ? "Pour de courtes distances (<3 km), la marche réduit vos émissions à zéro et contourne les bouchons."
+          : "For short distances (<3 km), walking offsets emissions completely and bypasses transit queues.";
+      }
+    } else if (timePhase === "post-match") {
+      modeName = language === "es" ? "Línea de Tren Eléctrico" : language === "fr" ? "RER Électrique" : "Electric Rail Link";
+      reason = language === "es"
+        ? "La zona de taxis compartidos tiene congestión crítica. El tren eléctrico tiene vía prioritaria."
+        : language === "fr"
+        ? "La zone VTC est saturée. Le RER électrique dispose d'une voie prioritaire pour évacuer rapidement."
+        : "Rideshare zones are gridlocked post-match. The Electric Rail Link runs on dedicated tracks for rapid egress.";
+    } else {
+      modeName = language === "es" ? "Metro Express / Lanzaderas" : language === "fr" ? "Métro Express / Navettes" : "Express Metro / Shuttles";
+      reason = language === "es"
+        ? "El Metro Express ofrece el mejor balance de velocidad, bajo costo y reducción de huella de carbono."
+        : language === "fr"
+        ? "Le Métro Express offre le meilleur équilibre de vitesse, coût réduit et faible émission de carbone."
+        : "Express Metro / Shuttles offer the optimal balance of speed, low cost, and minimal carbon footprint.";
+    }
+
+    return { modeName, reason };
+  };
+
+  const aiRec = getAISmartTransitRecommendation();
 
   // Phase specific transit alerts
   const getPhaseTransitTip = () => {
@@ -92,6 +135,24 @@ export default function TransitHub({
             aria-label="Specify Travel Distance to Stadium"
             className="w-full accent-emerald-500 bg-slate-900 h-1.5 rounded"
           />
+        </div>
+
+        {/* AI Smart Transit Advisory */}
+        <div className={`mb-6 p-4 rounded-xl border flex items-start space-x-3 transition-colors ${
+          isHC 
+            ? "bg-neutral-900 border-yellow-400 text-yellow-300" 
+            : "bg-emerald-950/10 border-emerald-900/20 text-emerald-400"
+        }`}>
+          <div className="p-2 bg-emerald-500/10 rounded-lg shrink-0 text-emerald-400">
+            <Leaf className="h-5 w-5 animate-pulse" />
+          </div>
+          <div className="text-xs">
+            <h4 className="font-extrabold uppercase tracking-wider text-[10px] text-emerald-300 flex items-center">
+              AI Smart Transit Recommendation
+            </h4>
+            <p className="font-bold text-slate-100 mt-1">Recommended Mode: {aiRec.modeName}</p>
+            <p className="leading-relaxed text-[11px] text-slate-300 mt-1">{aiRec.reason}</p>
+          </div>
         </div>
 
         {/* Options list */}
