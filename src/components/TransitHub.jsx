@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TRANSLATIONS } from "../data/translation";
+import { getAISmartTransitRecommendation } from "../utils/transitHelper";
 import { TRANSIT_OPTIONS } from "../data/mockData";
 import { 
   Leaf, 
@@ -31,47 +32,7 @@ export default function TransitHub({
     }
   };
 
-  // Dynamic AI Commute Recommendation based on context (weather, distance, timePhase)
-  const getAISmartTransitRecommendation = () => {
-    let modeName = "";
-    let reason = "";
-
-    if (distance <= 3) {
-      if (weather && (weather.condition.toLowerCase().includes("rain") || weather.condition.toLowerCase().includes("snow") || weather.condition.toLowerCase().includes("thunderstorm"))) {
-        modeName = language === "es" ? "Lanzaderas Rápidas" : language === "fr" ? "Navettes Rapides" : "Rapid Shuttles";
-        reason = language === "es" 
-          ? "Debido a la lluvia/tormenta, recomendamos el servicio de enlace gratuito en lugar de caminar."
-          : language === "fr"
-          ? "En raison de la pluie/orage, nous recommandons la navette gratuite plutôt que la marche."
-          : "Due to ongoing precipitation, we recommend the free rapid shuttle loops over walking.";
-      } else {
-        modeName = language === "es" ? "Caminar / Peatonal" : language === "fr" ? "Marche / Piéton" : "Pedestrian Egress / Walk";
-        reason = language === "es"
-          ? "Para distancias cortas (<3 km), caminar reduce las emisiones a cero y evita las filas de tránsito."
-          : language === "fr"
-          ? "Pour de courtes distances (<3 km), la marche réduit vos émissions à zéro et contourne les bouchons."
-          : "For short distances (<3 km), walking offsets emissions completely and bypasses transit queues.";
-      }
-    } else if (timePhase === "post-match") {
-      modeName = language === "es" ? "Línea de Tren Eléctrico" : language === "fr" ? "RER Électrique" : "Electric Rail Link";
-      reason = language === "es"
-        ? "La zona de taxis compartidos tiene congestión crítica. El tren eléctrico tiene vía prioritaria."
-        : language === "fr"
-        ? "La zone VTC est saturée. Le RER électrique dispose d'une voie prioritaire pour évacuer rapidement."
-        : "Rideshare zones are gridlocked post-match. The Electric Rail Link runs on dedicated tracks for rapid egress.";
-    } else {
-      modeName = language === "es" ? "Metro Express / Lanzaderas" : language === "fr" ? "Métro Express / Navettes" : "Express Metro / Shuttles";
-      reason = language === "es"
-        ? "El Metro Express ofrece el mejor balance de velocidad, bajo costo y reducción de huella de carbono."
-        : language === "fr"
-        ? "Le Métro Express offre le meilleur équilibre de vitesse, coût réduit et faible émission de carbone."
-        : "Express Metro / Shuttles offer the optimal balance of speed, low cost, and minimal carbon footprint.";
-    }
-
-    return { modeName, reason };
-  };
-
-  const aiRec = getAISmartTransitRecommendation();
+  const aiRec = getAISmartTransitRecommendation(distance, timePhase, weather, language);
 
   // Phase specific transit alerts
   const getPhaseTransitTip = () => {
