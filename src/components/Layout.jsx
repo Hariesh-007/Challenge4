@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Thermometer,
-  Ticket
+  Ticket,
+  CheckSquare
 } from "lucide-react";
 
 export default function Layout({
@@ -57,6 +58,9 @@ export default function Layout({
   useEffect(() => {
     const isOps = role === "staff" || role === "organizer";
     if (activeTab === "command-center" && !isOps) {
+      setActiveTab("map");
+    }
+    if (activeTab === "volunteer-hub" && role !== "volunteer") {
       setActiveTab("map");
     }
   }, [role, activeTab, setActiveTab]);
@@ -108,6 +112,11 @@ export default function Layout({
   if (isOps) {
     desktopNavItems.push({ id: "command-center", label: t.tabCommandCenter, icon: Shield });
     mobileNavItems.push({ id: "command-center", label: t.tabCommandCenter, icon: Shield });
+  }
+
+  if (role === "volunteer") {
+    desktopNavItems.push({ id: "volunteer-hub", label: "Tasks", icon: CheckSquare });
+    mobileNavItems.push({ id: "volunteer-hub", label: "Tasks", icon: CheckSquare });
   }
 
   const isHC = accessibility?.highContrast;

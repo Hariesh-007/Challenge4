@@ -5,6 +5,7 @@ import AIChat from "./components/AIChat";
 import TransitHub from "./components/TransitHub";
 import GreenZone from "./components/GreenZone";
 import OpsDashboard from "./components/OpsDashboard";
+import VolunteerHub from "./components/VolunteerHub";
 import AccessibilityConfig from "./components/AccessibilityConfig";
 import { STADIUMS, INITIAL_INCIDENTS } from "./data/mockData";
 import { Accessibility } from "lucide-react";
@@ -39,6 +40,13 @@ export default function App() {
   
   // Incidents live state (modulated by simulation)
   const [incidents, setIncidents] = useState(INITIAL_INCIDENTS);
+  
+  // Volunteer Tasks state
+  const [volunteerTasks, setVolunteerTasks] = useState([
+    { id: "task-1", title: "Check gate D ADA accessibility scanner", zone: "Gate D Access", priority: "high", status: "pending", assignedTime: "14:10" },
+    { id: "task-2", title: "Distribute stadium maps at West Concourse", zone: "West Concourse", priority: "medium", status: "pending", assignedTime: "14:15" },
+    { id: "task-3", title: "Assist recycling waste sorting game guidelines", zone: "Green Zone", priority: "low", status: "completed", assignedTime: "13:45" }
+  ]);
   
   // Alerts ticker state
   const [alerts, setAlerts] = useState([]);
@@ -110,6 +118,67 @@ export default function App() {
 
     return () => unsubscribe();
   }, []);
+
+  // Real-time volunteer tasks synchronization with Firestore
+  useEffect(() => {
+    if (!db) return;
+
+    const tasksColRef = collection(db, "volunteer_tasks");
+    const unsubscribe = onSnapshot(tasksColRef, (snapshot) => {
+      if (snapshot.empty) {
+        const defaultTasks = [
+          { id: "task-1", title: "Check gate D ADA accessibility scanner", zone: "Gate D Access", priority: "high", status: "pending", assignedTime: "14:10" },
+          { id: "task-2", title: "Distribute stadium maps at West Concourse", zone: "West Concourse", priority: "medium", status: "pending", assignedTime: "14:15" },
+          { id: "task-3", title: "Assist recycling waste sorting game guidelines", zone: "Green Zone", priority: "low", status: "completed", assignedTime: "13:45" }
+        ];
+        defaultTasks.forEach(async (t) => {
+          try {
+            await setDoc(doc(tasksColRef, t.id), t);
+          } catch (err) {
+            console.warn("Failed initializing volunteer task in Firestore:", err.message);
+          }
+        });
+      } else {
+        const fetchedTasks = snapshot.docs.map(doc => doc.data());
+        // Sort to keep order consistent
+        fetchedTasks.sort((a, b) => b.id.localeCompare(a.id));
+        setVolunteerTasks(fetchedTasks);
+      }
+    }, (error) => {
+      console.warn("Firestore volunteer tasks snapshot listener issue:", error.message);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSetVolunteerTasks = (value) => {
+    if (typeof value === "function") {
+      setVolunteerTasks(prev => {
+        const next = value(prev);
+        if (db) {
+          next.forEach(async (t) => {
+            try {
+              await setDoc(doc(db, "volunteer_tasks", t.id), t);
+            } catch (err) {
+              console.warn("Failed to sync volunteer task to Firestore:", err.message);
+            }
+          });
+        }
+        return next;
+      });
+    } else {
+      setVolunteerTasks(value);
+      if (db && Array.isArray(value)) {
+        value.forEach(async (t) => {
+          try {
+            await setDoc(doc(db, "volunteer_tasks", t.id), t);
+          } catch (err) {
+            console.warn("Failed to sync volunteer task to Firestore:", err.message);
+          }
+        });
+      }
+    }
+  };
 
   // Intercept state changes to synchronize with Firestore database
   const handleSetGates = (value) => {
@@ -282,6 +351,15 @@ export default function App() {
             incidents={incidents}
             setIncidents={handleSetIncidents}
             addAlert={addAlert}
+          />
+        );
+      case "volunteer-hub":
+        return (
+          <VolunteerHub
+            volunteerTasks={volunteerTasks}
+            setVolunteerTasks={handleSetVolunteerTasks}
+            accessibility={accessibility}
+            language={language}
           />
         );
       default:
