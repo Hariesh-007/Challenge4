@@ -83,10 +83,11 @@ export default function AIChat({
     if (!text.trim()) return;
 
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const cleanText = text.replace(/[<>]/g, "").slice(0, 800).trim();
     const userMsg = {
       id: `usr-${Date.now()}`,
       sender: "user",
-      text,
+      text: cleanText,
       time: timestamp
     };
 
