@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TRANSLATIONS } from "../data/translation";
+import { getAISustainabilityAudit } from "../utils/sustainabilityHelper";
 import { SUSTAINABILITY_GAME } from "../data/mockData";
 import { 
   Leaf, 
@@ -80,6 +81,7 @@ export default function GreenZone({
 
   const isHC = accessibility?.highContrast;
   const currentItem = gameItems[currentIndex];
+  const audit = getAISustainabilityAudit(stadium?.id, language);
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -215,6 +217,24 @@ export default function GreenZone({
                   <span>{tipText}</span>
                 </div>
               ))}
+            </div>
+          </div>
+          {/* AI Sustainability Audit */}
+          <div className={`p-3.5 rounded-xl border flex items-start space-x-3 transition-all ${
+            isHC 
+              ? "bg-black border-yellow-400 text-yellow-300" 
+              : "bg-emerald-950/10 border-emerald-900/20 text-emerald-450"
+          }`}>
+            <div className="flex flex-col items-center justify-center shrink-0 w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+              <span className="text-[8px] uppercase font-bold text-slate-400">Score</span>
+              <span className="text-xs font-black text-emerald-400 leading-none mt-0.5">{audit.score}</span>
+            </div>
+            <div className="text-[11px] leading-relaxed">
+              <div className="font-extrabold uppercase text-[9px] tracking-wider text-emerald-300">
+                AI Sustainability Audit
+              </div>
+              <p className="text-slate-200 font-semibold mt-0.5">{audit.analysis}</p>
+              <p className="text-slate-450 mt-1 italic">💡 {audit.recommendation}</p>
             </div>
           </div>
         </div>
