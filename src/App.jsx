@@ -8,6 +8,8 @@ import OpsDashboard from "./components/OpsDashboard";
 import AccessibilityConfig from "./components/AccessibilityConfig";
 import { STADIUMS, INITIAL_INCIDENTS } from "./data/mockData";
 import { Accessibility } from "lucide-react";
+import { db } from "./firebase";
+import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
 
 export default function App() {
   const [role, setRole] = useState("fan");
@@ -42,12 +44,99 @@ export default function App() {
   const [alerts, setAlerts] = useState([]);
   const [showQuickAccess, setShowQuickAccess] = useState(false);
 
-  // Sync gates state when active stadium changes
+  // Sync gates state when active stadium changes (offline fallback)
   useEffect(() => {
-    if (stadium?.gates) {
+    if (!db && stadium?.gates) {
       setGates(stadium.gates);
     }
   }, [stadium]);
+
+  // Real-time gates synchronization with Firestore
+  useEffect(() => {
+    if (!db || !stadium?.id) return;
+
+    const gatesColRef = collection(db, `stadiums/${stadium.id}/gates`);
+    const unsubscribe = onSnapshot(gatesColRef, (snapshot) => {
+      if (snapshot.empty) {
+        // Initialize Firestore with default gates if empty
+        stadium.gates.forEach(async (g) => {
+          await setDoc(doc(gatesColRef, g.id), g);
+        });
+      } else {
+        const fetchedGates = snapshot.docs.map(doc => doc.data());
+        // Sort to keep rendering order consistent
+        fetchedGates.sort((a, b) => a.id.localeCompare(b.id));
+        setGates(fetchedGates);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [stadium]);
+
+  // Real-time incidents synchronization with Firestore
+  useEffect(() => {
+    if (!db) return;
+
+    const incColRef = collection(db, "incidents");
+    const unsubscribe = onSnapshot(incColRef, (snapshot) => {
+      if (snapshot.empty) {
+        // Initialize Firestore with default incidents if empty
+        INITIAL_INCIDENTS.forEach(async (inc) => {
+          await setDoc(doc(incColRef, inc.id), inc);
+        });
+      } else {
+        const fetchedIncidents = snapshot.docs.map(doc => doc.data());
+        // Sort to keep order consistent
+        fetchedIncidents.sort((a, b) => a.id.localeCompare(b.id));
+        setIncidents(fetchedIncidents);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Intercept state changes to synchronize with Firestore database
+  const handleSetGates = (value) => {
+    if (typeof value === "function") {
+      setGates(prev => {
+        const next = value(prev);
+        if (db && stadium?.id) {
+          next.forEach(async (g) => {
+            await setDoc(doc(db, `stadiums/${stadium.id}/gates`, g.id), g);
+          });
+        }
+        return next;
+      });
+    } else {
+      setGates(value);
+      if (db && stadium?.id && Array.isArray(value)) {
+        value.forEach(async (g) => {
+          await setDoc(doc(db, `stadiums/${stadium.id}/gates`, g.id), g);
+        });
+      }
+    }
+  };
+
+  const handleSetIncidents = (value) => {
+    if (typeof value === "function") {
+      setIncidents(prev => {
+        const next = value(prev);
+        if (db) {
+          next.forEach(async (inc) => {
+            await setDoc(doc(db, "incidents", inc.id), inc);
+          });
+        }
+        return next;
+      });
+    } else {
+      setIncidents(value);
+      if (db && Array.isArray(value)) {
+        value.forEach(async (inc) => {
+          await setDoc(doc(db, "incidents", inc.id), inc);
+        });
+      }
+    }
+  };
 
   // Fetch real-time weather data from Open-Meteo REST API
   useEffect(() => {
@@ -157,9 +246,9 @@ export default function App() {
             language={language}
             accessibility={accessibility}
             gates={gates}
-            setGates={setGates}
+            setGates={handleSetGates}
             incidents={incidents}
-            setIncidents={setIncidents}
+            setIncidents={handleSetIncidents}
             addAlert={addAlert}
           />
         );
