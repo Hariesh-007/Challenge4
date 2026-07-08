@@ -60,7 +60,11 @@ export default function App() {
       if (snapshot.empty) {
         // Initialize Firestore with default gates if empty
         stadium.gates.forEach(async (g) => {
-          await setDoc(doc(gatesColRef, g.id), g);
+          try {
+            await setDoc(doc(gatesColRef, g.id), g);
+          } catch (err) {
+            console.warn("Failed initializing gate document in Firestore:", err.message);
+          }
         });
       } else {
         const fetchedGates = snapshot.docs.map(doc => doc.data());
@@ -68,6 +72,10 @@ export default function App() {
         fetchedGates.sort((a, b) => a.id.localeCompare(b.id));
         setGates(fetchedGates);
       }
+    }, (error) => {
+      console.warn("Firestore gates snapshot listener permission issue:", error.message);
+      // Graceful offline fallback
+      setGates(stadium.gates);
     });
 
     return () => unsubscribe();
@@ -82,7 +90,11 @@ export default function App() {
       if (snapshot.empty) {
         // Initialize Firestore with default incidents if empty
         INITIAL_INCIDENTS.forEach(async (inc) => {
-          await setDoc(doc(incColRef, inc.id), inc);
+          try {
+            await setDoc(doc(incColRef, inc.id), inc);
+          } catch (err) {
+            console.warn("Failed initializing incident document in Firestore:", err.message);
+          }
         });
       } else {
         const fetchedIncidents = snapshot.docs.map(doc => doc.data());
@@ -90,6 +102,10 @@ export default function App() {
         fetchedIncidents.sort((a, b) => a.id.localeCompare(b.id));
         setIncidents(fetchedIncidents);
       }
+    }, (error) => {
+      console.warn("Firestore incidents snapshot listener permission issue:", error.message);
+      // Graceful offline fallback
+      setIncidents(INITIAL_INCIDENTS);
     });
 
     return () => unsubscribe();
@@ -102,7 +118,11 @@ export default function App() {
         const next = value(prev);
         if (db && stadium?.id) {
           next.forEach(async (g) => {
-            await setDoc(doc(db, `stadiums/${stadium.id}/gates`, g.id), g);
+            try {
+              await setDoc(doc(db, `stadiums/${stadium.id}/gates`, g.id), g);
+            } catch (err) {
+              console.warn("Failed to sync gate to Firestore:", err.message);
+            }
           });
         }
         return next;
@@ -111,7 +131,11 @@ export default function App() {
       setGates(value);
       if (db && stadium?.id && Array.isArray(value)) {
         value.forEach(async (g) => {
-          await setDoc(doc(db, `stadiums/${stadium.id}/gates`, g.id), g);
+          try {
+            await setDoc(doc(db, `stadiums/${stadium.id}/gates`, g.id), g);
+          } catch (err) {
+            console.warn("Failed to sync gate to Firestore:", err.message);
+          }
         });
       }
     }
@@ -123,7 +147,11 @@ export default function App() {
         const next = value(prev);
         if (db) {
           next.forEach(async (inc) => {
-            await setDoc(doc(db, "incidents", inc.id), inc);
+            try {
+              await setDoc(doc(db, "incidents", inc.id), inc);
+            } catch (err) {
+              console.warn("Failed to sync incident to Firestore:", err.message);
+            }
           });
         }
         return next;
@@ -132,7 +160,11 @@ export default function App() {
       setIncidents(value);
       if (db && Array.isArray(value)) {
         value.forEach(async (inc) => {
-          await setDoc(doc(db, "incidents", inc.id), inc);
+          try {
+            await setDoc(doc(db, "incidents", inc.id), inc);
+          } catch (err) {
+            console.warn("Failed to sync incident to Firestore:", err.message);
+          }
         });
       }
     }
